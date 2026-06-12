@@ -1,0 +1,24 @@
+/*
+ * @skaperiet/akse — CSS-variabel-fallbacks.
+ *
+ * Komponentene bruker host-appens CSS-variabler (--primary-color, --card-bg, ...).
+ * På eget domene (akse3d.no) finnes ingen host-CSS, så disse fallbackene trer inn.
+ *
+ * Verdiene ligger i et @layer slik at de ALDRI overstyrer en host som definerer de
+ * samme variablene uten lag (f.eks. Skaperiets app.css) — ikke-lagdelt CSS vinner
+ * alltid over lagdelt, uavhengig av import-rekkefølge. Importér derfor trygt fra host.
+ */
+@layer akse-fallback {
+  :root {
+    /* Font for standalone (akse3d.no). I host arver Akse appens font i stedet —
+       var(--akse-font, inherit) på .akse-root faller tilbake til inherit. */
+    --akse-font: 'Nunito', 'Trebuchet MS', system-ui, -apple-system, sans-serif;
+    --primary-color: #2563eb;
+    --primary-light-bg: #e8f0fe;
+    --card-bg: #ffffff;
+    --bg-secondary: #f4f6fb;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e3e8f0;
+  }
+}

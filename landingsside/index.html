@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akse — 3D-modellering for barn og unge</title>
+  <meta name="description" content="Akse er et gratis, norsk 3D-modelleringsverktøy for barn og unge. Bygg med grunnfigurer, tegn plantegninger i 2D og eksporter STL-filer klare for 3D-print.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 60 18v28L32 60 4 46V18z' fill='%234a90e2'/%3E%3Cpath d='M32 4 60 18 32 32 4 18z' fill='%236aa9ec'/%3E%3Cpath d='M32 32v28L4 46V18z' fill='%233a7bc8'/%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- ====== Toppmeny ====== -->
+  <header class="topbar">
+    <a class="brand" href="#topp" aria-label="Akse — til toppen">
+      <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 4 60 18v28L32 60 4 46V18z" fill="var(--blaa)"/>
+        <path d="M32 4 60 18 32 32 4 18z" fill="#6aa9ec"/>
+        <path d="M32 32v28L4 46V18z" fill="#3a7bc8"/>
+      </svg>
+      <span>Akse</span>
+    </a>
+    <nav class="topnav" aria-label="Hovedmeny">
+      <a href="#hva">Hva er Akse?</a>
+      <a href="#slik">Slik fungerer det</a>
+      <a href="#plantegning">Plantegning</a>
+      <a href="#funksjoner">Funksjoner</a>
+    </nav>
+    <a class="knapp knapp--primaer knapp--liten" href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne Akse&nbsp;→</a>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <main id="topp">
+    <section class="hero">
+      <div class="hero-akser" aria-hidden="true">
+        <div class="akse-x"></div>
+        <div class="akse-y"></div>
+      </div>
+
+      <div class="hero-tekst">
+        <p class="overlinje reveal">Norsk 3D-verktøy for skaperverkstedet</p>
+        <h1 class="reveal">
+          <span class="ord ord--blaa">Tegn.</span>
+          <span class="ord ord--oransje">Bygg.</span>
+          <span class="ord ord--groenn">Print.</span>
+        </h1>
+        <p class="ingress reveal">
+          Akse er et 3D-modelleringsverktøy laget for barn og unge.
+          Sett sammen grunnfigurer, tegn dine egne plantegninger i 2D
+          — og eksporter modellen som STL-fil, klar for 3D-printeren.
+        </p>
+        <div class="hero-knapper reveal">
+          <a class="knapp knapp--primaer" href="https://akse3d.no/test" target="_blank" rel="noopener">Prøv Akse gratis</a>
+          <a class="knapp knapp--sekundaer" href="#slik">Se hvordan det fungerer</a>
+        </div>
+        <ul class="hero-fakta reveal" aria-label="Nøkkelfakta">
+          <li><span class="hake">✓</span> Rett i nettleseren</li>
+          <li><span class="hake">✓</span> Helt på norsk</li>
+          <li><span class="hake">✓</span> STL-eksport for 3D-print</li>
+        </ul>
+      </div>
+
+      <div class="hero-bilde reveal">
+        <div class="nettleser-ramme nettleser-ramme--vippet">
+          <div class="nettleser-topp" aria-hidden="true">
+            <span class="dott dott--roed"></span>
+            <span class="dott dott--gul"></span>
+            <span class="dott dott--groenn"></span>
+            <span class="adresse">akse3d.no/test</span>
+          </div>
+          <img src="img/editor.png" alt="Akse-editoren: en blå smultring-formet 3D-modell med hull, omgitt av figurbibliotek til venstre og egenskapspanel til høyre" loading="eager">
+        </div>
+        <span class="maal-chip maal-chip--1" aria-hidden="true">21.5</span>
+        <span class="maal-chip maal-chip--2" aria-hidden="true">34.5</span>
+        <span class="maal-chip maal-chip--3" aria-hidden="true">H: 10 mm</span>
+        <span class="hull-sirkel" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <!-- ====== Hva er Akse? ====== -->
+    <section class="seksjon seksjon--hva" id="hva">
+      <div class="seksjon-indre seksjon-indre--smal">
+        <p class="seksjon-nr reveal">01 / Hva er Akse?</p>
+        <h2 class="reveal">3D-modellering som <em>alle</em> kan mestre</h2>
+        <p class="brodtekst reveal">
+          Akse betyr <strong>akse</strong> — som i X, Y og Z. Det er hele ideen:
+          et verktøy der barn og unge lærer å tenke i tre dimensjoner, uten å
+          drukne i avanserte menyer. Du bygger modeller ved å plassere og forme
+          grunnfigurer — eller tegne ditt eget omriss — og alt måles i ekte
+          millimeter, slik at det du ser på skjermen er det du holder i hånden
+          etter printing.
+        </p>
+        <p class="brodtekst reveal">
+          Akse er laget av <strong>Skaperiet</strong>, et skaperverksted for barn
+          og unge, og brukes i kurs og verksteder der veien fra idé til ferdig
+          3D-print skal være så kort som mulig. Alt kjører rett i nettleseren —
+          ingenting å installere.
+        </p>
+        <div class="hva-kort reveal">
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">🧒</span>
+            <h3>For barn og unge</h3>
+            <p>Enkle verktøy, norske ord og store knapper. Designet for nysgjerrige hender — på både PC og nettbrett.</p>
+          </div>
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">📏</span>
+            <h3>Ekte millimeter</h3>
+            <p>Alle mål er i mm. Det barna tegner stemmer med det som kommer ut av 3D-printeren.</p>
+          </div>
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">🖨️</span>
+            <h3>Klar for print</h3>
+            <p>Ett klikk eksporterer hele prosjektet som STL-fil — formatet alle 3D-printere forstår.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Slik fungerer det ====== -->
+    <section class="seksjon seksjon--slik" id="slik">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">02 / Slik fungerer det</p>
+        <h2 class="reveal">Fra idé til 3D-print i tre steg</h2>
+
+        <ol class="steg-liste">
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">1</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <g class="steg1-kube">
+                  <path d="M40 22 70 35v26L40 74 10 61V35z" fill="var(--blaa)"/>
+                  <path d="M40 22 70 35 40 48 10 35z" fill="#6aa9ec"/>
+                  <path d="M40 48v26L10 61V35z" fill="#3a7bc8"/>
+                </g>
+                <g class="steg1-sylinder">
+                  <rect x="78" y="38" width="32" height="28" fill="var(--groenn)"/>
+                  <ellipse cx="94" cy="66" rx="16" ry="6" fill="#1f8b4d"/>
+                  <ellipse cx="94" cy="38" rx="16" ry="6" fill="#54c98a"/>
+                </g>
+              </svg>
+            </div>
+            <h3>Bygg med figurer</h3>
+            <p>
+              Velg blant kube, sylinder, kule, kjegle, pyramide, kile og smultring
+              — eller tegn ditt eget omriss med frihåndstegning, 3D-tekst og
+              plantegning. Figurene lander rett på arbeidsplanet.
+            </p>
+          </li>
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">2</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <ellipse cx="60" cy="46" rx="34" ry="24" fill="var(--blaa)"/>
+                <ellipse class="steg2-hull" cx="60" cy="46" rx="13" ry="9" fill="var(--papir)" stroke="var(--oransje)" stroke-width="3" stroke-dasharray="6 5"/>
+              </svg>
+            </div>
+            <h3>Form og kombinér</h3>
+            <p>
+              Flytt, rotér og skalér med millimeterpresisjon og smart snapping.
+              Sett en figur til <strong>hull</strong>, så skjærer den seg gjennom
+              de andre — perfekt for skruehull, vinduer og hemmelige rom.
+            </p>
+          </li>
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">3</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <rect x="34" y="14" width="52" height="64" rx="6" fill="#fff" stroke="var(--blekk)" stroke-width="3"/>
+                <text x="60" y="52" text-anchor="middle" font-size="16" font-weight="bold" fill="var(--blaa)" font-family="inherit">STL</text>
+                <path class="steg3-pil" d="M60 58v14m0 0-7-7m7 7 7-7" stroke="var(--groenn)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Eksporter og print</h3>
+            <p>
+              Trykk på <strong>STL</strong>-knappen og hele modellen lastes ned
+              som én utskriftsklar fil. Du kan også importere STL-filer andre
+              har laget, og bygge videre på dem.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ====== Plantegning ====== -->
+    <section class="seksjon seksjon--plantegning" id="plantegning">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr seksjon-nr--lys reveal">03 / Skisseverktøyet</p>
+        <h2 class="reveal">Plantegning: tegn i 2D, <span class="uthev">få 3D</span></h2>
+        <p class="brodtekst brodtekst--lys reveal">
+          Det kraftigste verktøyet i Akse er <strong>Plantegning</strong> — et
+          eget skissebrett der du tegner formen ovenfra på millimeterpapir, og
+          løfter den opp til en 3D-modell med ett klikk.
+        </p>
+
+        <div class="plantegning-grid">
+          <figure class="plantegning-bilde plantegning-bilde--stor reveal">
+            <img src="img/plantegning.png" alt="Plantegning-editoren: verktøylinje med rektangel, sirkel, ellipse, trekant og polygon til venstre, en skisse av en sirkel med hull i midten, og en levende 3D-forhåndsvisning nede til høyre">
+            <figcaption>Skissebrettet med verktøy, egenskaper og levende 3D-forhåndsvisning.</figcaption>
+          </figure>
+          <figure class="plantegning-bilde plantegning-bilde--liten reveal">
+            <img src="img/skisse-naerbilde.png" alt="Nærbilde av en skisse: en blå sirkel og trekant, et oransje stiplet hull, og blå målelinjer som viser avstander i millimeter">
+            <figcaption>Mål mellom grupperte figurer vises og redigeres direkte i skissen.</figcaption>
+          </figure>
+
+          <ul class="plantegning-punkter">
+            <li class="reveal">
+              <h3><span class="punkt-ikon" aria-hidden="true">▭</span> Sju tegneverktøy</h3>
+              <p>Rektangel, avrundet rektangel, sirkel, ellipse, trekant og polygon — alle med egne hurtigtaster, slik at hendene lærer verktøyet.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon punkt-ikon--oransje" aria-hidden="true">◌</span> Solid eller hull</h3>
+              <p>Hver figur kan være <strong>solid</strong> (blå) eller <strong>hull</strong> (oransje, stiplet). Hullene klippes ut av modellen — slik lager du for eksempel en nøkkelring på under et minutt.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon" aria-hidden="true">↔</span> Grupper med avstandsguider</h3>
+              <p>Grupper figurer, så vises avstanden mellom dem som redigerbare mål — skriv inn eksakte tall, og figurene holder seg sammen når du flytter og skalerer.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon punkt-ikon--groenn" aria-hidden="true">⬆</span> Lag 3D-modell</h3>
+              <p>Velg <strong>3D-høyde</strong> i millimeter og trykk «Lag 3D-modell». Forhåndsvisningen viser resultatet før du bestemmer deg — og du kan alltid gå tilbake og redigere skissen.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Grunnfigurer ====== -->
+    <section class="seksjon seksjon--figurer" id="figurer">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">04 / Byggeklossene</p>
+        <h2 class="reveal">Sju grunnfigurer. Uendelige muligheter.</h2>
+        <p class="brodtekst reveal">
+          Alt i Akse starter med enkle figurer. Kombinér dem som solide klosser
+          eller hull, så vokser de til romskip, smykker, navneskilt og
+          reservedeler. Hver figur har sin egen tast på tastaturet.
+        </p>
+
+        <ul class="figur-grid">
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 54 19v22L32 52 10 41V19z" fill="var(--blaa)"/><path d="M32 8 54 19 32 30 10 19z" fill="#6aa9ec"/><path d="M32 30v22L10 41V19z" fill="#3a7bc8"/></svg>
+            <h3>Kube</h3><kbd>K</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="16" y="16" width="32" height="32" fill="var(--blaa)"/><ellipse cx="32" cy="48" rx="16" ry="7" fill="#3a7bc8"/><ellipse cx="32" cy="16" rx="16" ry="7" fill="#6aa9ec"/></svg>
+            <h3>Sylinder</h3><kbd>S</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--blaa)"/><ellipse cx="25" cy="25" rx="8" ry="5" fill="#6aa9ec" transform="rotate(-30 25 25)"/></svg>
+            <h3>Kule</h3><kbd>U</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 50 48H14z" fill="var(--blaa)"/><ellipse cx="32" cy="48" rx="18" ry="7" fill="#3a7bc8"/></svg>
+            <h3>Kjegle</h3><kbd>J</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 54 48H10z" fill="var(--blaa)"/><path d="M32 8 54 48 32 42z" fill="#3a7bc8"/></svg>
+            <h3>Pyramide</h3><kbd>P</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 50V22l44 28z" fill="var(--blaa)"/><path d="M10 50h44L10 22z" fill="#3a7bc8" opacity=".45"/></svg>
+            <h3>Kile</h3><kbd>I</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--blaa)"/><circle cx="32" cy="32" r="9" fill="var(--papir)"/></svg>
+            <h3>Smultring</h3><kbd>M</kbd>
+          </li>
+          <li class="figur-kort figur-kort--pluss reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><text x="32" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="var(--blaa)" font-family="inherit">Aa</text></svg>
+            <h3>…og 3D-tekst, frihåndstegning og STL-import</h3>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== Funksjoner ====== -->
+    <section class="seksjon seksjon--funksjoner" id="funksjoner">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">05 / Funksjoner</p>
+        <h2 class="reveal">Lite verktøy. Store muligheter.</h2>
+
+        <ul class="funksjon-grid">
+          <li class="funksjon reveal">
+            <h3>📐 Millimeterpresisjon</h3>
+            <p>Flytt med snapping på 0,1 / 0,5 / 1 / 10 mm, og rotér med snapping på 1° / 22,5° / 45° / 90°. Mål vises direkte på modellen og kan redigeres med tastaturet.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>🕳️ Boolske hull</h3>
+            <p>Alle figurer kan settes til «hull»-modus og skjæres ut av modellen. Skruehull, brevsprekker og kikkehull — uten avansert CAD.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>💾 Lagre der du vil</h3>
+            <p>Lagre prosjekter i skyen med Skaperiet-konto, eller som fil på egen maskin. Prosjektene er små JSON-filer som er enkle å dele.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>↩️ Trygt å prøve og feile</h3>
+            <p>Full angre- og gjør om-historikk (Ctrl+Z / Ctrl+Shift+Z), kopier og lim inn, og dupliser med Ctrl+D for å lage mønstre.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>🎨 Farger og tema</h3>
+            <p>Åtte friske farger til figurene, og både lyst og mørkt tema i editoren — for sene kvelder på skaperverkstedet.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>👆 Mus eller berøring</h3>
+            <p>Full støtte for mus med håndtak og hurtigtaster — og et forenklet berøringsoppsett som fungerer fint på nettbrett.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== CTA ====== -->
+    <section class="seksjon seksjon--cta">
+      <div class="seksjon-indre seksjon-indre--smal cta-boks reveal">
+        <h2>Klar til å bygge noe?</h2>
+        <p>
+          Akse er gratis og kjører rett i nettleseren.
+          Start med en kube — se hvor det ender.
+        </p>
+        <a class="knapp knapp--primaer knapp--stor" href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne Akse-editoren</a>
+        <p class="cta-liten">Fungerer i alle moderne nettlesere · Ingen installasjon</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer class="bunn">
+    <div class="seksjon-indre bunn-indre">
+      <div class="bunn-brand">
+        <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 4 60 18v28L32 60 4 46V18z" fill="var(--blaa)"/>
+          <path d="M32 4 60 18 32 32 4 18z" fill="#6aa9ec"/>
+          <path d="M32 32v28L4 46V18z" fill="#3a7bc8"/>
+        </svg>
+        <span>Akse</span>
+      </div>
+      <p>Laget med skaperglede av <a href="https://skaperiet.no" target="_blank" rel="noopener">Skaperiet</a> — skaperverksted for barn og unge.</p>
+      <p class="bunn-lenker">
+        <a href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne editoren</a> ·
+        Kommer snart innebygd på skaperiet.no/akse
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
