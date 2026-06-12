@@ -722,3 +722,133 @@ a { color: var(--blaa-moerk); }
   .hull-sirkel { display: none; }
   .maal-chip--2 { right: 4px; }
 }
+
+/* ==========================================================================
+   Brand-lockup: ikon i blå boks + «En Skaperiet tjeneste»
+   ========================================================================== */
+
+.brand-gruppe { display: flex; align-items: center; gap: 10px; }
+
+.brand-ikon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  background: var(--blaa);
+  border-radius: 12px;
+  flex: none;
+  text-decoration: none;
+}
+.brand-ikon .brand-kube { width: 26px; height: 26px; }
+
+.brand-tekst { display: flex; flex-direction: column; line-height: 1.15; }
+
+.brand-navn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--blekk);
+  text-decoration: none;
+}
+
+.brand-tagline {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--blekk-lys);
+  text-decoration: none;
+}
+.brand-tagline strong { color: var(--blekk); font-weight: 700; }
+.brand-tagline:hover,
+.brand-tagline:hover strong { color: var(--blaa); }
+
+.bunn-navn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #fff;
+}
+.bunn .bunn-tagline {
+  font-size: 0.78rem;
+  color: #aebdcd;
+  text-decoration: none;
+}
+.bunn .bunn-tagline strong { color: #fff; }
+.bunn .bunn-tagline:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   Seksjon: Host selv
+   ========================================================================== */
+
+.seksjon--hostselv {
+  background: var(--hvit);
+  border-top: var(--kant);
+  border-bottom: var(--kant);
+}
+
+.host-steg {
+  list-style: none;
+  display: grid;
+  gap: 22px;
+  margin-top: 34px;
+}
+
+.host-steg li {
+  background: var(--papir);
+  border: var(--kant);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+
+.host-steg h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+.host-tall {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blaa);
+  color: #fff;
+  font-size: 0.95rem;
+  box-shadow: 0 5px 14px rgba(74, 144, 226, 0.45);
+  flex: none;
+}
+.host-steg li:nth-child(2) .host-tall { background: var(--oransje); box-shadow: 0 5px 14px rgba(230, 126, 34, 0.45); }
+.host-steg li:nth-child(3) .host-tall { background: var(--groenn); box-shadow: 0 5px 14px rgba(39, 174, 96, 0.45); }
+
+.host-steg p { color: var(--blekk-lys); margin-bottom: 8px; }
+
+.kommando {
+  background: var(--blekk);
+  color: #d9e6f5;
+  border-radius: 10px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 10px 0 4px;
+}
+.kommando code { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; }
+
+.inline-kode {
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(74, 144, 226, 0.10);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.host-lisens {
+  margin-top: 26px;
+  font-size: 0.95rem;
+  color: var(--blekk-lys);
+  border-left: 3px solid var(--blaa);
+  padding-left: 14px;
+}

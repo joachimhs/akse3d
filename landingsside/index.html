@@ -15,21 +15,27 @@
 
   <!-- ====== Toppmeny ====== -->
   <header class="topbar">
-    <a class="brand" href="#topp" aria-label="Akse — til toppen">
-      <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M32 4 60 18v28L32 60 4 46V18z" fill="var(--blaa)"/>
-        <path d="M32 4 60 18 32 32 4 18z" fill="#6aa9ec"/>
-        <path d="M32 32v28L4 46V18z" fill="#3a7bc8"/>
-      </svg>
-      <span>Akse</span>
-    </a>
+    <div class="brand-gruppe">
+      <a class="brand-ikon" href="#topp" aria-label="Akse — til toppen">
+        <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 4 60 18v28L32 60 4 46V18z" fill="#e3edf9"/>
+          <path d="M32 4 60 18 32 32 4 18z" fill="#ffffff"/>
+          <path d="M32 32v28L4 46V18z" fill="#c9dcf4"/>
+        </svg>
+      </a>
+      <span class="brand-tekst">
+        <a class="brand-navn" href="#topp">Akse</a>
+        <a class="brand-tagline" href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">En <strong>Skaperiet</strong> tjeneste</a>
+      </span>
+    </div>
     <nav class="topnav" aria-label="Hovedmeny">
       <a href="#hva">Hva er Akse?</a>
       <a href="#slik">Slik fungerer det</a>
       <a href="#plantegning">Plantegning</a>
       <a href="#funksjoner">Funksjoner</a>
+      <a href="#hostselv">Host selv</a>
     </nav>
-    <a class="knapp knapp--primaer knapp--liten" href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne Akse&nbsp;→</a>
+    <a class="knapp knapp--primaer knapp--liten" href="https://skaperiet.no/akse" target="_blank" rel="noopener">Åpne Akse&nbsp;→</a>
   </header>
 
   <!-- ====== Hero ====== -->
@@ -53,7 +59,7 @@
           — og eksporter modellen som STL-fil, klar for 3D-printeren.
         </p>
         <div class="hero-knapper reveal">
-          <a class="knapp knapp--primaer" href="https://akse3d.no/test" target="_blank" rel="noopener">Prøv Akse gratis</a>
+          <a class="knapp knapp--primaer" href="https://skaperiet.no/akse" target="_blank" rel="noopener">Prøv Akse gratis</a>
           <a class="knapp knapp--sekundaer" href="#slik">Se hvordan det fungerer</a>
         </div>
         <ul class="hero-fakta reveal" aria-label="Nøkkelfakta">
@@ -69,7 +75,7 @@
             <span class="dott dott--roed"></span>
             <span class="dott dott--gul"></span>
             <span class="dott dott--groenn"></span>
-            <span class="adresse">akse3d.no/test</span>
+            <span class="adresse">skaperiet.no/akse</span>
           </div>
           <img src="img/editor.png" alt="Akse-editoren: en blå smultring-formet 3D-modell med hull, omgitt av figurbibliotek til venstre og egenskapspanel til høyre" loading="eager">
         </div>
@@ -310,6 +316,53 @@
       </div>
     </section>
 
+    <!-- ====== Host selv ====== -->
+    <section class="seksjon seksjon--hostselv" id="hostselv">
+      <div class="seksjon-indre seksjon-indre--smal">
+        <p class="seksjon-nr reveal">06 / Host selv</p>
+        <h2 class="reveal">Åpen kildekode — kjør Akse hvor du vil</h2>
+        <p class="brodtekst reveal">
+          Akse er fri programvare under <strong>AGPL-3.0</strong>-lisensen, og hele
+          kildekoden ligger åpent på
+          <a href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">GitHub</a>.
+          Skoler, skaperverksteder og nysgjerrige kan kjøre sin egen Akse — helt
+          gratis. Slik kommer du i gang:
+        </p>
+
+        <ol class="host-steg">
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">1</span> Hent kildekoden</h3>
+            <p>Du trenger <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> (versjon 22 eller nyere) og git på maskinen.</p>
+            <pre class="kommando"><code>git clone https://github.com/joachimhs/akse3d.git
+cd akse3d</code></pre>
+          </li>
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">2</span> Installer og start</h3>
+            <pre class="kommando"><code>npm install
+npm run dev</code></pre>
+            <p>Åpne <strong>http://localhost:5173</strong> i nettleseren — der kjører din egen Akse. Prosjektene lagres lokalt i nettleseren.</p>
+          </li>
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">3</span> Bygg inn i din egen nettside</h3>
+            <p>
+              Akse er også en Svelte-pakke (<code class="inline-kode">@skaperiet/akse</code>)
+              som kan bygges inn i egne nettsider med egen lagringsbackend gjennom
+              enkle porter. Se
+              <a href="https://github.com/joachimhs/akse3d#readme" target="_blank" rel="noopener">README-en på GitHub</a>
+              for detaljer.
+            </p>
+          </li>
+        </ol>
+
+        <p class="host-lisens reveal">
+          AGPL-3.0 betyr at Akse er fritt å bruke, endre og hoste — så lenge din
+          versjon også deler kildekoden sin. Vil du bruke Akse i en lukket,
+          kommersiell løsning? Skaperiet tilbyr
+          <a href="https://github.com/joachimhs/akse3d/blob/main/LICENSE-COMMERCIAL.md" target="_blank" rel="noopener">kommersiell lisens</a>.
+        </p>
+      </div>
+    </section>
+
     <!-- ====== CTA ====== -->
     <section class="seksjon seksjon--cta">
       <div class="seksjon-indre seksjon-indre--smal cta-boks reveal">
@@ -318,7 +371,7 @@
           Akse er gratis og kjører rett i nettleseren.
           Start med en kube — se hvor det ender.
         </p>
-        <a class="knapp knapp--primaer knapp--stor" href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne Akse-editoren</a>
+        <a class="knapp knapp--primaer knapp--stor" href="https://skaperiet.no/akse" target="_blank" rel="noopener">Åpne Akse-editoren</a>
         <p class="cta-liten">Fungerer i alle moderne nettlesere · Ingen installasjon</p>
       </div>
     </section>
@@ -328,17 +381,22 @@
   <footer class="bunn">
     <div class="seksjon-indre bunn-indre">
       <div class="bunn-brand">
-        <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M32 4 60 18v28L32 60 4 46V18z" fill="var(--blaa)"/>
-          <path d="M32 4 60 18 32 32 4 18z" fill="#6aa9ec"/>
-          <path d="M32 32v28L4 46V18z" fill="#3a7bc8"/>
-        </svg>
-        <span>Akse</span>
+        <span class="brand-ikon" aria-hidden="true">
+          <svg class="brand-kube" viewBox="0 0 64 64">
+            <path d="M32 4 60 18v28L32 60 4 46V18z" fill="#e3edf9"/>
+            <path d="M32 4 60 18 32 32 4 18z" fill="#ffffff"/>
+            <path d="M32 32v28L4 46V18z" fill="#c9dcf4"/>
+          </svg>
+        </span>
+        <span class="brand-tekst">
+          <span class="bunn-navn">Akse</span>
+          <a class="bunn-tagline" href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">En <strong>Skaperiet</strong> tjeneste</a>
+        </span>
       </div>
       <p>Laget med skaperglede av <a href="https://skaperiet.no" target="_blank" rel="noopener">Skaperiet</a> — skaperverksted for barn og unge.</p>
       <p class="bunn-lenker">
-        <a href="https://akse3d.no/test" target="_blank" rel="noopener">Åpne editoren</a> ·
-        Kommer snart innebygd på skaperiet.no/akse
+        <a href="https://skaperiet.no/akse" target="_blank" rel="noopener">Åpne editoren</a> ·
+        <a href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">Kildekoden på GitHub</a>
       </p>
     </div>
   </footer>
