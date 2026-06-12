@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- @skaperiet/akse — mount-punkt -->
 <script lang="ts">
   import { setContext, onMount, onDestroy } from 'svelte';
@@ -7,6 +8,8 @@
   import ShapeLibrary from './ShapeLibrary.svelte';
   import TransformPanel from './TransformPanel.svelte';
   import TopBar from './TopBar.svelte';
+  import AkseGuideRunner from './AkseGuideRunner.svelte';
+  import type { AkseGuide } from '$lib/guide';
   import type { AkseProject } from '$lib/models';
   import { blankProject } from '$lib/models';
   import { preloadFont } from '$lib/akse/textGeometry';
@@ -24,6 +27,9 @@
     loadError = null,
     texts = undefined,
     maxStlTriangles = 500_000,
+    guide = null,
+    onGuideClose,
+    onOpenGuides,
   } = $props<{
     storage?: AkseStoragePort;
     session: AkseSession;
@@ -35,6 +41,12 @@
     texts?: Partial<AkseTexts>;
     /** Maks trekanter ved STL-import (~48 B/trekant i lagret JSON). Sky-hosts bør sette lavere. */
     maxStlTriangles?: number;
+    /** Interaktiv steg-for-steg guide som vises som boble nede til høyre. */
+    guide?: AkseGuide | null;
+    /** Kalles når brukeren lukker guiden (host nullstiller typisk `guide`-prop-en). */
+    onGuideClose?: () => void;
+    /** Vis «Start en guide»-knapp i toolbaren; host åpner sin guide-velger. */
+    onOpenGuides?: () => void;
   }>();
 
   // Tekster flettes én gang (konstante per økt) og brukes både som kapabilitets-
@@ -74,6 +86,7 @@
     },
     texts: resolvedTexts,
     onProjectIdChange,
+    onOpenGuides,
     fontUrl,
     maxStlTriangles,
   });
@@ -154,6 +167,9 @@
       if (!store.canPaste) return;
       e.preventDefault();
       store.paste();
+    } else if (meta && e.key.toLowerCase() === 'a') {
+      e.preventDefault();
+      store.selectAll();
     } else if (meta && !e.shiftKey && e.key.toLowerCase() === 'g') {
       e.preventDefault();
       store.groupSelected();
@@ -261,6 +277,11 @@
   <div class="panel-slot" class:collapsed={!panelOpen}>
     <TransformPanel />
   </div>
+  {#if guide}
+    {#key guide.id}
+      <AkseGuideRunner {guide} onClose={() => onGuideClose?.()} />
+    {/key}
+  {/if}
 </div>
 
 <style>

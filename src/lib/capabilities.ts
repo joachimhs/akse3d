@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — auto-detektert lagringskapabilitets-modell.
 import type { AkseTexts } from '$lib/texts';
 

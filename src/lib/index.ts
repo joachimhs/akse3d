@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — public API
 export { default as Akse } from '$lib/components/Akse.svelte';
 
@@ -21,3 +23,6 @@ export type {
 } from '$lib/models';
 
 export { blankProject, DEFAULT_WORKPLANE, DEFAULT_COLORS } from '$lib/models';
+
+export type { AkseGuide, AkseGuideStep, AkseValidator } from '$lib/guide';
+export { runAkseValidator } from '$lib/guide';

@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — direkte fil-lagring/-åpning via File System Access API.
 // Kalles KUN når capabilities.diskFile.available er true.
 

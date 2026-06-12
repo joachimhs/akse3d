@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — kontrakt mellom pakke og host (portene) + Svelte-context.
 import { getContext, setContext } from 'svelte';
 import type { AkseProject, AkseProjectSummary } from '$lib/models';
@@ -26,6 +28,12 @@ export interface AkseConfig {
   capabilities: StorageCapabilities;
   texts: AkseTexts;
   onProjectIdChange?: (id: string) => void;
+  /**
+   * Host vil tilby guider: TopBar viser en «Start en guide»-knapp som kaller
+   * denne (host åpner typisk en guide-velger og setter deretter guide-prop-en).
+   * Fravær = knappen vises ikke.
+   */
+  onOpenGuides?: () => void;
   fontUrl: string;
   // Hard grense for STL-import (antall trekanter). Mesh-data lagres i prosjekt-
   // JSON-en (~48 byte per trekant som base64), så sky-hosts bør sette denne lavt

@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- src/lib/components/akse/TopBar.svelte -->
 <script lang="ts">
   import { getContext } from 'svelte';
@@ -70,9 +71,12 @@
 </script>
 
 <div class="toolbar">
-  <div class="akse-logo" title="Akse">
+  <div class="akse-logo" title="Akse — en Skaperiet tjeneste">
     <i class="fa-solid fa-cube logo-icon"></i>
-    <span class="logo-text">Akse</span>
+    <span class="logo-stack">
+      <span class="logo-text">Akse</span>
+      <span class="logo-tagline">En <strong>Skaperiet</strong> tjeneste</span>
+    </span>
   </div>
 
   <input
@@ -98,6 +102,17 @@
     >
       <i class="fa-solid fa-file"></i>
     </button>
+    {#if config.onOpenGuides}
+      <button
+        type="button"
+        class="tool-button"
+        onclick={() => config.onOpenGuides?.()}
+        title="Start en guide"
+        aria-label="Start en guide"
+      >
+        <i class="fa-solid fa-graduation-cap"></i>
+      </button>
+    {/if}
     <button
       type="button"
       class="tool-button"
@@ -262,10 +277,26 @@
     border-radius: var(--akse-radius-sm, 8px);
     box-shadow: 0 2px 6px var(--akse-ring, rgba(37, 99, 235, 0.25));
   }
+  .logo-stack {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
   .logo-text {
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.01em;
+  }
+  /* Tagline under ordmerket — samme uttrykk som Blockuino-logoen. */
+  .logo-tagline {
+    font-size: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary, #64748b);
+    white-space: nowrap;
+  }
+  .logo-tagline strong {
+    font-weight: 700;
   }
 
   /* "Ghost"-felt: smelter inn til du peker på eller redigerer det. */
@@ -449,10 +480,11 @@
     .project-name { min-width: 90px; max-width: 160px; }
     .theme-label { display: none; }
     .stl-label { display: none; }
+    .logo-tagline { display: none; }
   }
   @container (max-width: 560px) {
     .akse-logo { padding-right: 0.4rem; }
-    .logo-text { display: none; }
+    .logo-stack { display: none; }
     .project-name { min-width: 60px; }
   }
 </style>

@@ -1,7 +1,9 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <script lang="ts">
-  import { setContext } from 'svelte';
+  import { setContext, getContext, onDestroy } from 'svelte';
   import type { SketchData, SketchFigureKind } from '$lib/akse/plantegning/sketchTypes';
   import { SketchStore } from '$lib/akse/plantegning/SketchStore.svelte';
+  import { ProjectStore, STORE_CONTEXT_KEY } from '$lib/akse/ProjectStore.svelte';
   import PlantegningCanvas from './PlantegningCanvas.svelte';
   import PlantegningToolbar from './PlantegningToolbar.svelte';
   import PlantegningPropertyPanel from './PlantegningPropertyPanel.svelte';
@@ -15,6 +17,17 @@
 
   const store = new SketchStore(initialData);
   setContext('sketchStore', store);
+
+  // Speil skissen live inn i ProjectStore så guide-validatorer kan sjekke
+  // innholdet mens editoren er åpen. Null-sjekk: editoren kan i prinsippet
+  // monteres utenfor Akse-treet (tester).
+  const projectStore = getContext<ProjectStore | undefined>(STORE_CONTEXT_KEY);
+  $effect(() => {
+    if (projectStore) projectStore.activeSketchData = store.toSketchData();
+  });
+  onDestroy(() => {
+    if (projectStore) projectStore.activeSketchData = null;
+  });
 
   // Input-mode-deteksjon for touch-tilpasninger
   let inputMode = $state<'pointer' | 'touch'>('pointer');

@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/lib/akse/plantegning/SketchStore.svelte.ts
 import type { SketchData, SketchFigure, SketchFigureKind } from './sketchTypes';
 import { DEFAULT_EXTRUDE_HEIGHT_MM } from './sketchTypes';

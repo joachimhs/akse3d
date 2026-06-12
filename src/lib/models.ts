@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — rene datatyper som krysser porten
 import type { SketchData } from '$lib/akse/plantegning/sketchTypes';
 import { generateUuidIsh } from '$lib/util/uuid';

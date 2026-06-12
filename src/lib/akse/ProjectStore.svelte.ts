@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — ProjectStore
 
 import type { AkseProject, Shape, ShapeKind } from '$lib/models';
@@ -33,6 +35,16 @@ export class ProjectStore {
   // ID til sketch-shape som skal re-redigeres. ShapeLibrary observerer dette
   // og åpner PlantegningEditor med shape.sketchData.
   editingSketchId = $state<string | null>(null);
+
+  // Live speil av skissen som er åpen i Plantegning-editoren (null når lukket).
+  // Settes av PlantegningEditor; brukes av guide-validatorene så steg kan få
+  // grønn hake mens brukeren fortsatt tegner. Ikke en del av prosjekt-state.
+  activeSketchData = $state<SketchData | null>(null);
+
+  // True mens en editor-modal (Plantegning/Tegning) er åpen. Settes av
+  // ShapeLibrary; guideboblen flytter seg til venstre side så den ikke
+  // dekker modalens «Lag 3D-modell»-knapp nede til høyre.
+  editorModalOpen = $state(false);
 
   // Persistens-porten host injiserer. ProjectStore kjenner ingen konkret backend.
   private storage?: AkseStoragePort;
@@ -522,6 +534,10 @@ export class ProjectStore {
 
   deselectAll(): void {
     this.selectedIds = new Set();
+  }
+
+  selectAll(): void {
+    this.selectedIds = new Set(this.project.shapes.map((s) => s.id));
   }
 
   setName(name: string): void {

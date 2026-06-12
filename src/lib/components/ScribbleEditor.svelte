@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <script lang="ts">
   import ScribblePreview3D from './ScribblePreview3D.svelte';
 
@@ -8,6 +9,7 @@
 
   const CANVAS_SIZE = 400;
   const STROKE_WIDTH_PX = 12;  // visuell tykkelse på canvas (skaleres til 3mm i 3D)
+  const ERASER_RADIUS_PX = 14; // viskelærets radius (litt større enn streken)
 
   let canvasEl: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
@@ -15,6 +17,12 @@
   let allPaths = $state<number[][]>([]);  // flat [x0,y0,x1,y1,...] per strek
   let currentPath: number[] = [];
   let fillMode = $state(false);  // toggle: tegn fylt figur vs ribbon-strek
+
+  // Verktøy: tegn nye streker, eller visk bort der du gnir (deler streker ved behov)
+  let tool = $state<'draw' | 'erase'>('draw');
+  let eraserPos = $state<{ x: number; y: number } | null>(null);
+  let isErasing = false;
+  let eraseSnapshotTaken = false; // én undo-snapshot per visk-bevegelse
 
   // Undo/redo: snapshots av allPaths (dypkopiert via JSON for enkelhet)
   let undoStack = $state<number[][][]>([]);
@@ -90,6 +98,52 @@
     }
     // Tegn current path under tegning
     if (currentPath.length >= 2) drawPath(currentPath);
+
+    // Viskelær-indikator: stiplet sirkel der viskelæret er
+    if (tool === 'erase' && eraserPos) {
+      ctx.beginPath();
+      ctx.arc(eraserPos.x, eraserPos.y, ERASER_RADIUS_PX, 0, Math.PI * 2);
+      ctx.strokeStyle = '#e74c3c';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  /**
+   * Visk bort punkter innenfor viskelær-radius rundt (x, y). Streker som
+   * viskes i midten deles i to; biter som blir for korte fjernes helt.
+   */
+  function eraseAt(x: number, y: number) {
+    const r2 = ERASER_RADIUS_PX * ERASER_RADIUS_PX;
+    let changed = false;
+    const next: number[][] = [];
+    for (const path of allPaths) {
+      let run: number[] = [];
+      let pathChanged = false;
+      for (let i = 0; i < path.length; i += 2) {
+        const dx = path[i] - x;
+        const dy = path[i + 1] - y;
+        if (dx * dx + dy * dy <= r2) {
+          pathChanged = true;
+          if (run.length >= 4) next.push(run);
+          run = [];
+        } else {
+          run.push(path[i], path[i + 1]);
+        }
+      }
+      if (run.length >= 4) next.push(run);
+      else if (run.length > 0) pathChanged = true; // for kort rest forkastes
+      if (pathChanged) changed = true;
+    }
+    if (!changed) return;
+    if (!eraseSnapshotTaken) {
+      snapshot(); // tas FØR endringen — hele visk-bevegelsen blir ett angre-steg
+      eraseSnapshotTaken = true;
+    }
+    allPaths = next;
+    redraw();
   }
 
   function drawPath(path: number[]) {
@@ -111,16 +165,30 @@
 
   function handlePointerDown(e: PointerEvent) {
     canvasEl.setPointerCapture(e.pointerId);
+    const [x, y] = getPointerPos(e);
+    if (tool === 'erase') {
+      isErasing = true;
+      eraseSnapshotTaken = false;
+      eraserPos = { x, y };
+      eraseAt(x, y);
+      redraw();
+      return;
+    }
     isDrawing = true;
     currentPath = [];
-    const [x, y] = getPointerPos(e);
     currentPath.push(x, y);
     redraw();
   }
 
   function handlePointerMove(e: PointerEvent) {
-    if (!isDrawing) return;
     const [x, y] = getPointerPos(e);
+    if (tool === 'erase') {
+      eraserPos = { x, y };
+      if (isErasing) eraseAt(x, y);
+      redraw();
+      return;
+    }
+    if (!isDrawing) return;
     const lastX = currentPath[currentPath.length - 2];
     const lastY = currentPath[currentPath.length - 1];
     const dx = x - lastX, dy = y - lastY;
@@ -130,6 +198,10 @@
   }
 
   function handlePointerUp() {
+    if (isErasing) {
+      isErasing = false;
+      return;
+    }
     if (!isDrawing) return;
     isDrawing = false;
     if (currentPath.length >= 4) {
@@ -137,6 +209,19 @@
       allPaths.push([...currentPath]);
     }
     currentPath = [];
+    redraw();
+  }
+
+  function handlePointerLeave() {
+    if (eraserPos) {
+      eraserPos = null;
+      redraw();
+    }
+  }
+
+  function velgVerktoy(t: 'draw' | 'erase') {
+    tool = t;
+    if (t === 'draw') eraserPos = null;
     redraw();
   }
 
@@ -193,19 +278,41 @@
         Hver strek blir til en tykk linje (3mm) ekstrudert til 20mm høy.
       {/if}
     </p>
-    <label class="fill-toggle">
-      <input type="checkbox" bind:checked={fillMode} />
-      Fyll figur (lukk og fyll streken)
-    </label>
+    <div class="tool-row">
+      <button
+        type="button"
+        class="tool-btn"
+        class:active={tool === 'draw'}
+        onclick={() => velgVerktoy('draw')}
+        title="Tegn streker"
+      >
+        <i class="fa-solid fa-pencil" aria-hidden="true"></i> Tegn
+      </button>
+      <button
+        type="button"
+        class="tool-btn"
+        class:active={tool === 'erase'}
+        onclick={() => velgVerktoy('erase')}
+        title="Visk bort der du gnir"
+      >
+        <i class="fa-solid fa-eraser" aria-hidden="true"></i> Viskelær
+      </button>
+      <label class="fill-toggle">
+        <input type="checkbox" bind:checked={fillMode} />
+        Fyll figur (lukk og fyll streken)
+      </label>
+    </div>
     <div class="editor-row">
       <canvas
         bind:this={canvasEl}
+        class:erasing={tool === 'erase'}
         width={CANVAS_SIZE}
         height={CANVAS_SIZE}
         onpointerdown={handlePointerDown}
         onpointermove={handlePointerMove}
         onpointerup={handlePointerUp}
         onpointercancel={handlePointerUp}
+        onpointerleave={handlePointerLeave}
       ></canvas>
       <div class="side">
         <span class="side-label">3D-forhåndsvisning</span>
@@ -274,6 +381,29 @@
   }
   .close:hover { background: #f3f4f6; color: var(--text-primary, #1e293b); }
   .hint { color: #666; font-size: 13px; margin: 0; max-width: 400px; }
+  .tool-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tool-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-color, #e3e8f0);
+    border-radius: var(--akse-radius-sm, 8px);
+    background: white; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: #374151;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .tool-btn:hover:not(.active) {
+    background: var(--akse-tint, #e8f0fe);
+    color: var(--primary-color, #2563eb);
+  }
+  .tool-btn.active {
+    background: var(--primary-color, #2563eb);
+    border-color: var(--primary-color, #2563eb);
+    color: white;
+    box-shadow: 0 2px 8px var(--akse-ring, rgba(37, 99, 235, 0.3));
+  }
   .fill-toggle {
     display: flex; align-items: center; gap: 8px;
     font-size: 13px; font-weight: 500; color: #334155;
@@ -281,6 +411,7 @@
     background: var(--bg-secondary, #f4f6fb); border-radius: var(--akse-radius-sm, 8px);
     cursor: pointer;
     user-select: none;
+    margin-left: auto;
   }
   .fill-toggle input { margin: 0; cursor: pointer; accent-color: var(--primary-color, #2563eb); }
   canvas {
@@ -290,6 +421,10 @@
     width: 400px; height: 400px;
     max-width: 80vw; max-height: 60vh;
     display: block;
+  }
+  /* Viskelær: sirkel-indikatoren tegnes på canvasen, så skjul pekeren */
+  canvas.erasing {
+    cursor: none;
   }
   .editor-row { display: flex; gap: 14px; align-items: flex-start; }
   .side {

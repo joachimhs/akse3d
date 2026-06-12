@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // @skaperiet/akse — vert-/sky-spesifikke tekster med norske defaults.
 // Host kan overstyre enkelt-nøkler via <Akse texts={{ ... }} />.
 

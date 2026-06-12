@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- src/lib/components/akse/SceneCanvas.svelte -->
 <script lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';

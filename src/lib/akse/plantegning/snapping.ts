@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/lib/akse/plantegning/snapping.ts
 import type { SketchFigure } from './sketchTypes';
 import { polygonize } from './polygonize';

@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/lib/akse/plantegning/sketchCsg.ts
 import polygonClipping, { type MultiPolygon, type Polygon } from 'polygon-clipping';
 import type { PolygonFigure } from './polygonize';

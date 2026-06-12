@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie)
+// SPDX-License-Identifier: AGPL-3.0-only
 import * as THREE from 'three';
 import polygonClipping, { type MultiPolygon } from 'polygon-clipping';
 

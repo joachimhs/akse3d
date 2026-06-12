@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- src/lib/components/ScribblePreview3D.svelte -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

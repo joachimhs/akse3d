@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- src/lib/components/akse/ShapeLibrary.svelte -->
 <script lang="ts">
   import { getContext } from 'svelte';
@@ -83,6 +84,11 @@
   let showPlantegningEditor = $state(false);
   let plantegningInitialData = $state<SketchData | null>(null);
   let plantegningEditingId = $state<string | null>(null);
+
+  // Guideboblen flytter seg unna modalens knapper når en editor er åpen.
+  $effect(() => {
+    store.editorModalOpen = showScribbleEditor || showPlantegningEditor;
+  });
 
   function add(kind: ShapeKind) {
     if (store.readOnly) return;

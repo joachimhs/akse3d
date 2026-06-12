@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <!-- src/lib/components/akse/TransformPanel.svelte -->
 <script lang="ts">
   import { getContext } from 'svelte';
@@ -420,9 +421,9 @@
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Modus</h4>
-      <label class="toggle-row">
-        <span>{single.mode === 'hole' ? 'Hull' : 'Solid'}</span>
+      <h4 class="property-label">Modus <span class="hotkey-hint">(H)</span></h4>
+      <label class="toggle-row mode-toggle-row">
+        <span class="mode-option" class:active={single.mode === 'solid'}>Solid</span>
         <button
           type="button"
           class="toggle-switch"
@@ -433,6 +434,7 @@
         >
           <span class="toggle-slider"></span>
         </button>
+        <span class="mode-option" class:active={single.mode === 'hole'}>Hull</span>
       </label>
     </div>
 
@@ -679,6 +681,11 @@
     letter-spacing: 0.05em;
     margin: 0 0 0.25rem 0;
   }
+  .hotkey-hint {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+  }
 
   .vec3 {
     display: grid;
@@ -854,6 +861,20 @@
     align-items: center;
     font-size: 0.8rem;
     color: var(--text-primary);
+  }
+  .mode-toggle-row {
+    cursor: pointer;
+  }
+  .mode-option {
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .mode-option.active {
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom-color: var(--primary-color);
   }
   .toggle-switch {
     position: relative;
