@@ -62,7 +62,9 @@ export function blankProject(user: string, idOverride?: string): AkseProject {
   const now = new Date().toISOString();
   return {
     id: idOverride ?? generateUuidIsh(),
-    name: 'Nytt prosjekt',
+    // Tomt navn → input viser den lokaliserte placeholderen (topbarProjectNamePlaceholder),
+    // og prosjektlistene viser «(uten navn)»/«(untitled)». Unngår hardkodet norsk default.
+    name: '',
     shapes: [],
     workplaneSize: DEFAULT_WORKPLANE,
     user,

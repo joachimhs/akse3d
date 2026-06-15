@@ -4,6 +4,9 @@
   import type { SketchStore } from '$lib/akse/plantegning/SketchStore.svelte';
   import type { SketchFigure } from '$lib/akse/plantegning/sketchTypes';
   import { polygonize } from '$lib/akse/plantegning/polygonize';
+  import { getAkseConfig } from '$lib/config';
+
+  const config = getAkseConfig();
 
   const store = getContext<SketchStore>('sketchStore');
 
@@ -159,7 +162,7 @@
               onpointerdown={stop}
               onclick={(e) => { e.stopPropagation(); startEdit('w'); }}
               style="cursor: {isGrouped ? 'default' : 'pointer'};">
-          B {bbox.w.toFixed(1)} mm
+          {config.texts.plantegningDimWidth} {bbox.w.toFixed(1)} mm
         </text>
       {/if}
     </g>
@@ -194,7 +197,7 @@
               onpointerdown={stop}
               onclick={(e) => { e.stopPropagation(); startEdit('h'); }}
               style="cursor: {isGrouped ? 'default' : 'pointer'};">
-          H {bbox.h.toFixed(1)} mm
+          {config.texts.plantegningDimHeight} {bbox.h.toFixed(1)} mm
         </text>
       {/if}
     </g>

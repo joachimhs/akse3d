@@ -10,6 +10,10 @@
   import type { AkseGuide, AkseGuideStep } from '$lib/guide';
   import { runAkseValidator } from '$lib/guide';
   import { renderGuideMarkdown } from '$lib/akse/guideMarkdown';
+  import { getAkseConfig } from '$lib/config';
+  import { interpolate } from '$lib/texts';
+
+  const config = getAkseConfig();
 
   let { guide, onClose = () => {} } = $props<{
     guide: AkseGuide;
@@ -125,10 +129,10 @@
     class:passed={!!passed[currentStep.id]}
     class:venstre={store.editorModalOpen}
     onclick={() => (minimized = false)}
-    title="Vis guiden"
+    title={config.texts.guideChromeShowGuide}
   >
     <span class="pill-check">{#if passed[currentStep.id]}✓{:else}{currentStepIndex + 1}{/if}</span>
-    Steg {currentStepIndex + 1} av {steps.length}
+    {interpolate(config.texts.guideChromeStepOf, { current: currentStepIndex + 1, total: steps.length })}
   </button>
 {/if}
 
@@ -143,9 +147,9 @@
     {#if allDone}
       <div class="celebration">
         <div class="celebration-emoji">🎉</div>
-        <h3>Gratulerer!</h3>
-        <p>Du har fullført «{guide.name}».</p>
-        <button class="btn-primary" onclick={finishAndClose}>Lukk guiden</button>
+        <h3>{config.texts.guideChromeCongrats}</h3>
+        <p>{interpolate(config.texts.guideChromeCompletion, { name: guide.name })}</p>
+        <button class="btn-primary" onclick={finishAndClose}>{config.texts.guideChromeCloseGuide}</button>
       </div>
     {:else}
       {#if showAllSteps}
@@ -172,26 +176,26 @@
           onclick={() => (showAllSteps = !showAllSteps)}
           aria-expanded={showAllSteps}
         >
-          <span>{showAllSteps ? 'Skjul steg' : 'Vis steg'}</span>
+          <span>{showAllSteps ? config.texts.guideChromeHideSteps : config.texts.guideChromeShowSteps}</span>
           <span class="caret">{showAllSteps ? '▲' : '▼'}</span>
         </button>
         <button
           type="button"
           class="minimize-toggle"
           onclick={() => (minimized = true)}
-          title="Minimer guiden"
-          aria-label="Minimer guiden"
+          title={config.texts.guideChromeMinimize}
+          aria-label={config.texts.guideChromeMinimize}
         >–</button>
       </div>
 
-      <div class="step-num">Steg {currentStepIndex + 1} av {steps.length}</div>
+      <div class="step-num">{interpolate(config.texts.guideChromeStepOf, { current: currentStepIndex + 1, total: steps.length })}</div>
       <h3 class="step-title">{currentStep.title}</h3>
 
       {#if currentStep.validator.type !== 'info'}
         {#if passed[currentStep.id]}
-          <div class="status-pill passed">✓ Du har gjort det!</div>
+          <div class="status-pill passed">{config.texts.guideChromeStepPassed}</div>
         {:else}
-          <div class="status-pill waiting">⏳ Venter på handling…</div>
+          <div class="status-pill waiting">{config.texts.guideChromeStepWaiting}</div>
         {/if}
       {/if}
 
@@ -207,7 +211,7 @@
           type="button"
           class="image-thumb"
           onclick={() => (imageModalOpen = true)}
-          aria-label="Vis bilde i stort format"
+          aria-label={config.texts.guideChromeShowImageLarge}
         >
           <img src={currentStep.imageUrl} alt="Instruksjon for {currentStep.title}" />
         </button>
@@ -218,7 +222,7 @@
       {/if}
 
       <div class="controls">
-        <button class="btn-secondary" onclick={prev} disabled={isFirstStep}>Tilbake</button>
+        <button class="btn-secondary" onclick={prev} disabled={isFirstStep}>{config.texts.guideChromeBack}</button>
         {#if currentStep.validator.type === 'info'}
           <button
             class="btn-primary"
@@ -227,14 +231,14 @@
               next();
             }}
           >
-            {passed[currentStep.id] ? 'Neste →' : 'Forstått, gå videre'}
+            {passed[currentStep.id] ? config.texts.guideChromeNext : config.texts.guideChromeMarkPassed}
           </button>
         {:else if passed[currentStep.id]}
-          <button class="btn-primary" onclick={next} disabled={isLastStep}>Neste →</button>
+          <button class="btn-primary" onclick={next} disabled={isLastStep}>{config.texts.guideChromeNext}</button>
         {:else}
-          <button class="btn-secondary" onclick={next} disabled={isLastStep}>Hopp over</button>
+          <button class="btn-secondary" onclick={next} disabled={isLastStep}>{config.texts.guideChromeSkip}</button>
         {/if}
-        <button class="close-btn" onclick={close} aria-label="Lukk guiden" title="Lukk guiden">×</button>
+        <button class="close-btn" onclick={close} aria-label={config.texts.guideChromeCloseGuide} title={config.texts.guideChromeCloseGuide}>×</button>
       </div>
     {/if}
   </div>
@@ -250,7 +254,7 @@
       aria-modal="true"
       tabindex="-1"
     >
-      <button class="image-modal-close" onclick={() => (imageModalOpen = false)} aria-label="Lukk">×</button>
+      <button class="image-modal-close" onclick={() => (imageModalOpen = false)} aria-label={config.texts.commonClose}>×</button>
       <img class="image-modal-img" src={currentStep.imageUrl} alt="Instruksjon for {currentStep.title}" />
     </div>
   {/if}

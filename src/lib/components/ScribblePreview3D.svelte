@@ -7,6 +7,9 @@
     buildScribbleGeometryFromPaths,
     buildScribbleFilledGeometryFromPaths,
   } from '$lib/akse/scribbleGeometry';
+  import { getAkseConfig } from '$lib/config';
+
+  const config = getAkseConfig();
 
   // Levende 3D-forhåndsvisning for tegneverktøyet — samme uttrykk som
   // PlantegningPreview3D, men drevet av props (mm-stier + fyllmodus)
@@ -175,7 +178,7 @@
 <div class="preview3d">
   <div class="canvas-host" bind:this={containerEl}></div>
   {#if status === 'empty'}
-    <div class="overlay">Tegn en strek for å se 3D-modellen</div>
+    <div class="overlay">{config.texts.scribblePreviewEmpty}</div>
   {:else if status === 'error'}
     <div class="overlay note">Kunne ikke oppdatere 3D</div>
   {/if}

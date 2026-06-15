@@ -8,6 +8,9 @@
   import PlantegningToolbar from './PlantegningToolbar.svelte';
   import PlantegningPropertyPanel from './PlantegningPropertyPanel.svelte';
   import PlantegningPreview3D from './PlantegningPreview3D.svelte';
+  import { getAkseConfig } from '$lib/config';
+
+  const config = getAkseConfig();
 
   let { initialData, onCommit, onClose } = $props<{
     initialData: SketchData;
@@ -44,7 +47,7 @@
 
   function handleCommit() {
     if (store.figures.length === 0) {
-      alert('Tegn minst én figur før du lager 3D-modell');
+      alert(config.texts.plantegningMinFigureRequired);
       return;
     }
     onCommit(store.toSketchData());
@@ -121,8 +124,8 @@
 <div class="modal-backdrop" onclick={onClose} onpointerdown={detectInputMode} role="presentation">
   <div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
     <div class="header">
-      <h2><i class="fa-solid fa-compass-drafting" aria-hidden="true"></i> Plantegning</h2>
-      <button class="close" onclick={onClose} aria-label="Lukk" title="Lukk">
+      <h2><i class="fa-solid fa-compass-drafting" aria-hidden="true"></i> {config.texts.plantegningTitle}</h2>
+      <button class="close" onclick={onClose} aria-label={config.texts.commonClose} title={config.texts.commonClose}>
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
@@ -137,9 +140,9 @@
       </div>
     </div>
     <div class="footer">
-      <button type="button" class="secondary" onclick={onClose}>Avbryt</button>
+      <button type="button" class="secondary" onclick={onClose}>{config.texts.commonCancel}</button>
       <button type="button" class="primary" onclick={handleCommit}>
-        <i class="fa-solid fa-cube" aria-hidden="true"></i> Lag 3D-modell
+        <i class="fa-solid fa-cube" aria-hidden="true"></i> {config.texts.plantegningCreateModel}
       </button>
     </div>
   </div>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akse — 3D modelling for kids and teens</title>
+  <meta name="description" content="Akse is a free 3D modelling tool for kids and teens. Build with primitive shapes, draw 2D blueprints and export STL files ready for 3D printing.">
+
+  <!-- OpenGraph / sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Akse">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://akse3d.com/">
+  <meta property="og:title" content="Akse — Draw. Build. Print.">
+  <meta property="og:description" content="A 3D modelling tool for kids and teens. Free, open source and right in your browser — with STL export ready for the 3D printer.">
+  <meta property="og:image" content="https://akse3d.com/img/og-bilde.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Akse — Draw. Build. Print. 3D modelling for kids and teens.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Akse — Draw. Build. Print.">
+  <meta name="twitter:description" content="A 3D modelling tool for kids and teens. Free, open source and right in your browser — with STL export ready for the 3D printer.">
+  <meta name="twitter:image" content="https://akse3d.com/img/og-bilde.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 60 18v28L32 60 4 46V18z' fill='%234a90e2'/%3E%3Cpath d='M32 4 60 18 32 32 4 18z' fill='%236aa9ec'/%3E%3Cpath d='M32 32v28L4 46V18z' fill='%233a7bc8'/%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- ====== Top bar ====== -->
+  <header class="topbar">
+    <div class="brand-gruppe">
+      <a class="brand-ikon" href="#topp" aria-label="Akse — to top">
+        <svg class="brand-kube" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 4 60 18v28L32 60 4 46V18z" fill="#e3edf9"/>
+          <path d="M32 4 60 18 32 32 4 18z" fill="#ffffff"/>
+          <path d="M32 32v28L4 46V18z" fill="#c9dcf4"/>
+        </svg>
+      </a>
+      <span class="brand-tekst">
+        <a class="brand-navn" href="#topp">Akse</a>
+        <a class="brand-tagline" href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">A <strong>Skaperiet</strong> service</a>
+      </span>
+    </div>
+    <nav class="topnav" aria-label="Main menu">
+      <a href="#hva">What is Akse?</a>
+      <a href="#slik">How it works</a>
+      <a href="#plantegning">Blueprint</a>
+      <a href="#funksjoner">Features</a>
+      <a href="#hostselv">Self-host</a>
+      <a href="https://akse3d.no" rel="noopener">Norsk</a>
+    </nav>
+    <a class="knapp knapp--primaer knapp--liten" href="https://akse3d-app.skaperiet.no" target="_blank" rel="noopener">Open Akse&nbsp;→</a>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <main id="topp">
+    <section class="hero">
+      <div class="hero-akser" aria-hidden="true">
+        <div class="akse-x"></div>
+        <div class="akse-y"></div>
+      </div>
+
+      <div class="hero-tekst">
+        <p class="overlinje reveal">A 3D tool for the maker space</p>
+        <h1 class="reveal">
+          <span class="ord ord--blaa">Draw.</span>
+          <span class="ord ord--oransje">Build.</span>
+          <span class="ord ord--groenn">Print.</span>
+        </h1>
+        <p class="ingress reveal">
+          Akse is a 3D modelling tool made for kids and teens.
+          Combine primitive shapes, draw your own 2D blueprints
+          — and export the model as an STL file, ready for the 3D printer.
+        </p>
+        <div class="hero-knapper reveal">
+          <a class="knapp knapp--primaer" href="https://akse3d-app.skaperiet.no" target="_blank" rel="noopener">Try Akse for free</a>
+          <a class="knapp knapp--sekundaer" href="#slik">See how it works</a>
+        </div>
+        <ul class="hero-fakta reveal" aria-label="Key facts">
+          <li><span class="hake">✓</span> Right in your browser</li>
+          <li><span class="hake">✓</span> Free to use</li>
+          <li><span class="hake">✓</span> STL export for 3D printing</li>
+        </ul>
+      </div>
+
+      <div class="hero-bilde reveal">
+        <div class="nettleser-ramme nettleser-ramme--vippet">
+          <div class="nettleser-topp" aria-hidden="true">
+            <span class="dott dott--roed"></span>
+            <span class="dott dott--gul"></span>
+            <span class="dott dott--groenn"></span>
+            <span class="adresse">akse3d-app.skaperiet.no</span>
+          </div>
+          <img src="img/editor.png" alt="The Akse editor: a blue torus-shaped 3D model with a hole, surrounded by the shape library on the left and the properties panel on the right" loading="eager">
+        </div>
+        <span class="maal-chip maal-chip--1" aria-hidden="true">21.5</span>
+        <span class="maal-chip maal-chip--2" aria-hidden="true">34.5</span>
+        <span class="maal-chip maal-chip--3" aria-hidden="true">H: 10 mm</span>
+        <span class="hull-sirkel" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <!-- ====== What is Akse? ====== -->
+    <section class="seksjon seksjon--hva" id="hva">
+      <div class="seksjon-indre seksjon-indre--smal">
+        <p class="seksjon-nr reveal">01 / What is Akse?</p>
+        <h2 class="reveal">3D modelling <em>anyone</em> can master</h2>
+        <p class="brodtekst reveal">
+          Akse means <strong>axis</strong> — as in X, Y and Z. That's the whole idea:
+          a tool where kids and teens learn to think in three dimensions, without
+          drowning in advanced menus. You build models by placing and shaping
+          primitive shapes — or by drawing your own outline — and everything is
+          measured in real millimetres, so what you see on screen is what you hold
+          in your hand after printing.
+        </p>
+        <p class="brodtekst reveal">
+          Akse is made by <strong>Skaperiet</strong>, a maker space for kids and
+          teens, and is used in courses and workshops where the path from idea to
+          finished 3D print should be as short as possible. Everything runs right
+          in the browser — nothing to install.
+        </p>
+        <div class="hva-kort reveal">
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">🧒</span>
+            <h3>For kids and teens</h3>
+            <p>Simple tools, clear words and big buttons. Designed for curious hands — on both computer and tablet.</p>
+          </div>
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">📏</span>
+            <h3>Real millimetres</h3>
+            <p>All measurements are in mm. What the kids draw matches what comes out of the 3D printer.</p>
+          </div>
+          <div class="kort">
+            <span class="kort-ikon" aria-hidden="true">🖨️</span>
+            <h3>Ready to print</h3>
+            <p>One click exports the whole project as an STL file — the format every 3D printer understands.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== How it works ====== -->
+    <section class="seksjon seksjon--slik" id="slik">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">02 / How it works</p>
+        <h2 class="reveal">From idea to 3D print in three steps</h2>
+
+        <ol class="steg-liste">
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">1</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <g class="steg1-kube">
+                  <path d="M40 22 70 35v26L40 74 10 61V35z" fill="var(--blaa)"/>
+                  <path d="M40 22 70 35 40 48 10 35z" fill="#6aa9ec"/>
+                  <path d="M40 48v26L10 61V35z" fill="#3a7bc8"/>
+                </g>
+                <g class="steg1-sylinder">
+                  <rect x="78" y="38" width="32" height="28" fill="var(--groenn)"/>
+                  <ellipse cx="94" cy="66" rx="16" ry="6" fill="#1f8b4d"/>
+                  <ellipse cx="94" cy="38" rx="16" ry="6" fill="#54c98a"/>
+                </g>
+              </svg>
+            </div>
+            <h3>Build with shapes</h3>
+            <p>
+              Choose from box, cylinder, sphere, cone, pyramid, wedge and torus
+              — or draw your own outline with freehand drawing, 3D text and
+              blueprints. Shapes land right on the work plane.
+            </p>
+          </li>
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">2</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <ellipse cx="60" cy="46" rx="34" ry="24" fill="var(--blaa)"/>
+                <ellipse class="steg2-hull" cx="60" cy="46" rx="13" ry="9" fill="var(--papir)" stroke="var(--oransje)" stroke-width="3" stroke-dasharray="6 5"/>
+              </svg>
+            </div>
+            <h3>Shape and combine</h3>
+            <p>
+              Move, rotate and scale with millimetre precision and smart snapping.
+              Set a shape to <strong>hole</strong> mode and it cuts through the
+              others — perfect for screw holes, windows and secret compartments.
+            </p>
+          </li>
+          <li class="steg reveal">
+            <span class="steg-tall" aria-hidden="true">3</span>
+            <div class="steg-figur" aria-hidden="true">
+              <svg viewBox="0 0 120 90">
+                <rect x="34" y="14" width="52" height="64" rx="6" fill="#fff" stroke="var(--blekk)" stroke-width="3"/>
+                <text x="60" y="52" text-anchor="middle" font-size="16" font-weight="bold" fill="var(--blaa)" font-family="inherit">STL</text>
+                <path class="steg3-pil" d="M60 58v14m0 0-7-7m7 7 7-7" stroke="var(--groenn)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Export and print</h3>
+            <p>
+              Press the <strong>STL</strong> button and the whole model downloads
+              as a single print-ready file. You can also import STL files others
+              have made and build on them.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ====== Blueprint ====== -->
+    <section class="seksjon seksjon--plantegning" id="plantegning">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr seksjon-nr--lys reveal">03 / The blueprint tool</p>
+        <h2 class="reveal">Blueprint: draw in 2D, <span class="uthev">get 3D</span></h2>
+        <p class="brodtekst brodtekst--lys reveal">
+          The most powerful tool in Akse is <strong>Blueprint</strong> — a dedicated
+          drawing board where you draw the shape from above on millimetre paper,
+          and lift it into a 3D model with one click.
+        </p>
+
+        <div class="plantegning-grid">
+          <figure class="plantegning-bilde plantegning-bilde--stor reveal">
+            <img src="img/plantegning.png" alt="The Blueprint editor: a toolbar with rectangle, circle, ellipse, triangle and polygon on the left, a blueprint of a circle with a hole in the middle, and a live 3D preview at the bottom right">
+            <figcaption>The drawing board with tools, properties and a live 3D preview.</figcaption>
+          </figure>
+          <figure class="plantegning-bilde plantegning-bilde--liten reveal">
+            <img src="img/skisse-naerbilde.png" alt="Close-up of a blueprint: a blue circle and triangle, an orange dashed hole, and blue dimension lines showing distances in millimetres">
+            <figcaption>Distances between grouped shapes are shown and edited directly in the blueprint.</figcaption>
+          </figure>
+
+          <ul class="plantegning-punkter">
+            <li class="reveal">
+              <h3><span class="punkt-ikon" aria-hidden="true">▭</span> Seven drawing tools</h3>
+              <p>Rectangle, rounded rectangle, circle, ellipse, triangle and polygon — each with its own keyboard shortcut, so your hands learn the tool.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon punkt-ikon--oransje" aria-hidden="true">◌</span> Solid or hole</h3>
+              <p>Each shape can be <strong>solid</strong> (blue) or a <strong>hole</strong> (orange, dashed). Holes are cut out of the model — that's how you make a key fob in under a minute, for example.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon" aria-hidden="true">↔</span> Group with distance guides</h3>
+              <p>Group shapes and the distance between them shows as editable measurements — type in exact numbers, and the shapes stay together when you move and scale them.</p>
+            </li>
+            <li class="reveal">
+              <h3><span class="punkt-ikon punkt-ikon--groenn" aria-hidden="true">⬆</span> Make a 3D model</h3>
+              <p>Choose a <strong>3D height</strong> in millimetres and press "Make 3D model". The preview shows the result before you commit — and you can always go back and edit the blueprint.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Building blocks ====== -->
+    <section class="seksjon seksjon--figurer" id="figurer">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">04 / The building blocks</p>
+        <h2 class="reveal">Seven primitive shapes. Endless possibilities.</h2>
+        <p class="brodtekst reveal">
+          Everything in Akse starts with simple shapes. Combine them as solid
+          blocks or holes, and they grow into spaceships, jewellery, name tags and
+          spare parts. Each shape has its own key on the keyboard.
+        </p>
+
+        <ul class="figur-grid">
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 54 19v22L32 52 10 41V19z" fill="var(--blaa)"/><path d="M32 8 54 19 32 30 10 19z" fill="#6aa9ec"/><path d="M32 30v22L10 41V19z" fill="#3a7bc8"/></svg>
+            <h3>Box</h3><kbd>K</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="16" y="16" width="32" height="32" fill="var(--blaa)"/><ellipse cx="32" cy="48" rx="16" ry="7" fill="#3a7bc8"/><ellipse cx="32" cy="16" rx="16" ry="7" fill="#6aa9ec"/></svg>
+            <h3>Cylinder</h3><kbd>S</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--blaa)"/><ellipse cx="25" cy="25" rx="8" ry="5" fill="#6aa9ec" transform="rotate(-30 25 25)"/></svg>
+            <h3>Sphere</h3><kbd>U</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 50 48H14z" fill="var(--blaa)"/><ellipse cx="32" cy="48" rx="18" ry="7" fill="#3a7bc8"/></svg>
+            <h3>Cone</h3><kbd>J</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 54 48H10z" fill="var(--blaa)"/><path d="M32 8 54 48 32 42z" fill="#3a7bc8"/></svg>
+            <h3>Pyramid</h3><kbd>P</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 50V22l44 28z" fill="var(--blaa)"/><path d="M10 50h44L10 22z" fill="#3a7bc8" opacity=".45"/></svg>
+            <h3>Wedge</h3><kbd>I</kbd>
+          </li>
+          <li class="figur-kort reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--blaa)"/><circle cx="32" cy="32" r="9" fill="var(--papir)"/></svg>
+            <h3>Torus</h3><kbd>M</kbd>
+          </li>
+          <li class="figur-kort figur-kort--pluss reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><text x="32" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="var(--blaa)" font-family="inherit">Aa</text></svg>
+            <h3>…and 3D text, freehand drawing and STL import</h3>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== Features ====== -->
+    <section class="seksjon seksjon--funksjoner" id="funksjoner">
+      <div class="seksjon-indre">
+        <p class="seksjon-nr reveal">05 / Features</p>
+        <h2 class="reveal">Small tool. Big possibilities.</h2>
+
+        <ul class="funksjon-grid">
+          <li class="funksjon reveal">
+            <h3>📐 Millimetre precision</h3>
+            <p>Move with snapping at 0.1 / 0.5 / 1 / 10 mm, and rotate with snapping at 1° / 22.5° / 45° / 90°. Measurements show directly on the model and can be edited with the keyboard.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>🕳️ Boolean holes</h3>
+            <p>Any shape can be set to "hole" mode and cut out of the model. Screw holes, letter slots and peepholes — without advanced CAD.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>💾 Save where you like</h3>
+            <p>Save projects in the cloud with a Skaperiet account, or as a file on your own machine. Projects are small JSON files that are easy to share.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>↩️ Safe to experiment</h3>
+            <p>Full undo and redo history (Ctrl+Z / Ctrl+Shift+Z), copy and paste, and duplicate with Ctrl+D to create patterns.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>🎨 Colours and themes</h3>
+            <p>Eight fresh colours for your shapes, and both light and dark themes in the editor — for late nights at the maker space.</p>
+          </li>
+          <li class="funksjon reveal">
+            <h3>👆 Mouse or touch</h3>
+            <p>Full mouse support with handles and shortcuts — and a simplified touch layout that works well on tablets.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== Self-host ====== -->
+    <section class="seksjon seksjon--hostselv" id="hostselv">
+      <div class="seksjon-indre seksjon-indre--smal">
+        <p class="seksjon-nr reveal">06 / Self-host</p>
+        <h2 class="reveal">Open source — run Akse anywhere</h2>
+        <p class="brodtekst reveal">
+          Akse is free software under the <strong>AGPL-3.0</strong> licence, and the
+          entire source code is openly available on
+          <a href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">GitHub</a>.
+          Schools, maker spaces and the curious can run their own Akse — completely
+          free. Here's how to get started:
+        </p>
+
+        <ol class="host-steg">
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">1</span> Get the source code</h3>
+            <p>You'll need <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> (version 22 or newer) and git on your machine.</p>
+            <pre class="kommando"><code>git clone https://github.com/joachimhs/akse3d.git
+cd akse3d</code></pre>
+          </li>
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">2</span> Install and run</h3>
+            <pre class="kommando"><code>npm install
+npm run dev</code></pre>
+            <p>Open <strong>http://localhost:5173</strong> in your browser — your own Akse runs there. Projects are saved locally in the browser.</p>
+          </li>
+          <li class="reveal">
+            <h3><span class="host-tall" aria-hidden="true">3</span> Embed in your own website</h3>
+            <p>
+              Akse is also a Svelte package (<code class="inline-kode">@skaperiet/akse</code>)
+              that can be embedded in your own websites with your own storage
+              backend through simple ports. See the
+              <a href="https://github.com/joachimhs/akse3d#readme" target="_blank" rel="noopener">README on GitHub</a>
+              for details.
+            </p>
+          </li>
+        </ol>
+
+        <p class="host-lisens reveal">
+          AGPL-3.0 means Akse is free to use, modify and host — as long as your
+          version also shares its source code. Want to use Akse in a closed,
+          commercial solution? Skaperiet offers a
+          <a href="https://github.com/joachimhs/akse3d/blob/main/LICENSE-COMMERCIAL.md" target="_blank" rel="noopener">commercial licence</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====== CTA ====== -->
+    <section class="seksjon seksjon--cta">
+      <div class="seksjon-indre seksjon-indre--smal cta-boks reveal">
+        <h2>Ready to build something?</h2>
+        <p>
+          Akse is free and runs right in your browser.
+          Start with a box — see where it goes.
+        </p>
+        <a class="knapp knapp--primaer knapp--stor" href="https://akse3d-app.skaperiet.no" target="_blank" rel="noopener">Open the Akse editor</a>
+        <p class="cta-liten">Works in all modern browsers · No installation</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer class="bunn">
+    <div class="seksjon-indre bunn-indre">
+      <div class="bunn-brand">
+        <span class="brand-ikon" aria-hidden="true">
+          <svg class="brand-kube" viewBox="0 0 64 64">
+            <path d="M32 4 60 18v28L32 60 4 46V18z" fill="#e3edf9"/>
+            <path d="M32 4 60 18 32 32 4 18z" fill="#ffffff"/>
+            <path d="M32 32v28L4 46V18z" fill="#c9dcf4"/>
+          </svg>
+        </span>
+        <span class="brand-tekst">
+          <span class="bunn-navn">Akse</span>
+          <a class="bunn-tagline" href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">A <strong>Skaperiet</strong> service</a>
+        </span>
+      </div>
+      <p>Made with maker joy by <a href="https://skaperiet.no" target="_blank" rel="noopener">Skaperiet</a> — a maker space for kids and teens.</p>
+      <p class="bunn-lenker">
+        <a href="https://akse3d-app.skaperiet.no" target="_blank" rel="noopener">Open the editor</a> ·
+        <a href="https://github.com/joachimhs/akse3d" target="_blank" rel="noopener">Source code on GitHub</a> ·
+        <a href="https://akse3d.no" rel="noopener">Norsk</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

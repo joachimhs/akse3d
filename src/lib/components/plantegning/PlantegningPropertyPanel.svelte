@@ -3,6 +3,10 @@
   import { getContext } from 'svelte';
   import type { SketchStore } from '$lib/akse/plantegning/SketchStore.svelte';
   import type { SketchFigure } from '$lib/akse/plantegning/sketchTypes';
+  import { getAkseConfig } from '$lib/config';
+  import { interpolate } from '$lib/texts';
+
+  const config = getAkseConfig();
 
   const store = getContext<SketchStore>('sketchStore');
   const inputModeGetter = getContext<() => 'pointer' | 'touch'>('inputMode');
@@ -112,12 +116,12 @@
 </script>
 
 <div class="panel">
-  <h3>Egenskaper</h3>
+  <h3>{config.texts.plantegningPropertiesPanel}</h3>
   {#if !single && !multi}
-    <p class="empty">Velg en figur for å redigere</p>
+    <p class="empty">{config.texts.plantegningSelectToEdit}</p>
   {:else if single}
     <div class="grid">
-      <label>X (mm)
+      <label>{config.texts.plantegningX}
         <div class="num-wrap">
           {#if inputMode === 'touch'}
             <button class="step" onclick={() => updatePos('x', single.position.x - 1)}>−</button>
@@ -129,7 +133,7 @@
           {/if}
         </div>
       </label>
-      <label>Y (mm)
+      <label>{config.texts.plantegningY}
         <div class="num-wrap">
           {#if inputMode === 'touch'}
             <button class="step" onclick={() => updatePos('y', single.position.y - 1)}>−</button>
@@ -143,28 +147,28 @@
       </label>
 
       {#if single.kind === 'rectangle' || single.kind === 'roundedRect' || single.kind === 'triangle'}
-        <label>B (mm)
+        <label>{config.texts.plantegningWidth}
           <div class="num-wrap">
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('width', -1)}>−</button>
             {/if}
             <input type="number" step="0.1" min="0.1" value={(single.width ?? 0).toFixed(2)}
                    disabled={isGrouped}
-                   title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                   title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                    oninput={(e) => updateNumber('width', +e.currentTarget.value)} />
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('width', 1)}>+</button>
             {/if}
           </div>
         </label>
-        <label>H (mm)
+        <label>{config.texts.plantegningHeight}
           <div class="num-wrap">
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('height', -1)}>−</button>
             {/if}
             <input type="number" step="0.1" min="0.1" value={(single.height ?? 0).toFixed(2)}
                    disabled={isGrouped}
-                   title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                   title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                    oninput={(e) => updateNumber('height', +e.currentTarget.value)} />
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('height', 1)}>+</button>
@@ -173,22 +177,22 @@
         </label>
       {/if}
       {#if single.kind === 'roundedRect'}
-        <label>Hjørne-r (mm)
+        <label>{config.texts.plantegningCornerRadius}
           <input type="number" step="0.1" min="0" value={(single.cornerRadius ?? 0).toFixed(2)}
                  disabled={isGrouped}
-                 title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                 title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                  oninput={(e) => updateNumber('cornerRadius', +e.currentTarget.value)} />
         </label>
       {/if}
       {#if single.kind === 'circle' || single.kind === 'polygon'}
-        <label>Radius (mm)
+        <label>{config.texts.plantegningRadius}
           <div class="num-wrap">
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('radius', -1)}>−</button>
             {/if}
             <input type="number" step="0.1" min="0.1" value={(single.radius ?? 0).toFixed(2)}
                    disabled={isGrouped}
-                   title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                   title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                    oninput={(e) => updateNumber('radius', +e.currentTarget.value)} />
             {#if inputMode === 'touch' && !isGrouped}
               <button class="step" onclick={() => stepValue('radius', 1)}>+</button>
@@ -197,50 +201,50 @@
         </label>
       {/if}
       {#if single.kind === 'polygon'}
-        <label>{single.starMode ? 'Tagger' : 'Sider'}
+        <label>{single.starMode ? config.texts.plantegningPolygonTags : config.texts.plantegningPolygonSides}
           <input type="number" step="1" min="3" max="12" value={single.sides ?? 6}
                  disabled={isGrouped}
-                 title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                 title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                  oninput={(e) => updateNumber('sides', +e.currentTarget.value)} />
         </label>
         {#if single.starMode}
-          <label>Innerradius (mm)
+          <label>{config.texts.plantegningInnerRadius}
             <input type="number" step="0.1" min="0.1"
                    value={(single.innerRadius ?? (single.radius ?? 10) * 0.5).toFixed(2)}
                    disabled={isGrouped}
-                   title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                   title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                    oninput={(e) => updateNumber('innerRadius', +e.currentTarget.value)} />
           </label>
         {/if}
       {/if}
       {#if single.kind === 'triangle'}
-        <label class="span-2">Topp-X (mm)
+        <label class="span-2">{config.texts.plantegningApexX}
           <input type="number" step="0.1" value={(single.apexX ?? 0).toFixed(2)}
                  disabled={isGrouped}
-                 title={isGrouped ? 'Avgrupper først for å endre størrelse' : 'Toppens X-offset fra base-sentrum'}
+                 title={isGrouped ? config.texts.plantegningUngroupToResize : config.texts.plantegningApexXInfo}
                  oninput={(e) => updateNumber('apexX', +e.currentTarget.value)} />
         </label>
       {/if}
       {#if single.kind === 'ellipse'}
-        <label>Radius X (mm)
+        <label>{config.texts.plantegningRadiusX}
           <input type="number" step="0.1" min="0.1" value={(single.radiusX ?? 0).toFixed(2)}
                  disabled={isGrouped}
-                 title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                 title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                  oninput={(e) => updateNumber('radiusX', +e.currentTarget.value)} />
         </label>
-        <label>Radius Y (mm)
+        <label>{config.texts.plantegningRadiusY}
           <input type="number" step="0.1" min="0.1" value={(single.radiusY ?? 0).toFixed(2)}
                  disabled={isGrouped}
-                 title={isGrouped ? 'Avgrupper først for å endre størrelse' : ''}
+                 title={isGrouped ? config.texts.plantegningUngroupToResize : ''}
                  oninput={(e) => updateNumber('radiusY', +e.currentTarget.value)} />
         </label>
       {/if}
 
       {#if isGrouped}
-        <p class="grouped-hint"><i class="fa-solid fa-object-group" aria-hidden="true"></i> I gruppe — avgrupper for å endre størrelse</p>
+        <p class="grouped-hint"><i class="fa-solid fa-object-group" aria-hidden="true"></i> {config.texts.plantegningGroupedHint}</p>
       {/if}
 
-      <label>Rotasjon (°)
+      <label>{config.texts.plantegningRotation}
         <input type="number" step="1" value={single.rotation.toFixed(0)}
                oninput={(e) => updateNumber('rotation', +e.currentTarget.value)} />
       </label>
@@ -248,47 +252,47 @@
 
     {#if single.kind === 'triangle' && !isGrouped}
       <div class="presets">
-        <div class="presets-label">Standardtrekanter</div>
+        <div class="presets-label">{config.texts.plantegningPresetTriangles}</div>
         <div class="presets-row">
-          <button type="button" class="preset-btn" title="Likesidet (60-60-60)" onclick={() => presetTriangle('equilateral')}>△</button>
-          <button type="button" class="preset-btn" title="Rettvinklet venstre" onclick={() => presetTriangle('rightLeft')}>◣</button>
-          <button type="button" class="preset-btn" title="Rettvinklet høyre" onclick={() => presetTriangle('rightRight')}>◢</button>
+          <button type="button" class="preset-btn" title={config.texts.plantegningTriangleEquilateral} onclick={() => presetTriangle('equilateral')}>△</button>
+          <button type="button" class="preset-btn" title={config.texts.plantegningTriangleRightLeft} onclick={() => presetTriangle('rightLeft')}>◣</button>
+          <button type="button" class="preset-btn" title={config.texts.plantegningTriangleRightRight} onclick={() => presetTriangle('rightRight')}>◢</button>
         </div>
       </div>
     {/if}
 
     {#if single.kind === 'polygon' && !isGrouped}
       <div class="presets">
-        <div class="presets-label">Form</div>
+        <div class="presets-label">{config.texts.plantegningPolygonForm}</div>
         <div class="presets-row two-col">
           <button type="button" class="preset-btn" class:active={!single.starMode}
-                  title="Regulær n-kant" onclick={() => setPolygonMode(false)}>⬡ Normal</button>
+                  title={config.texts.plantegningPolygonRegular} onclick={() => setPolygonMode(false)}>⬡ Normal</button>
           <button type="button" class="preset-btn" class:active={single.starMode}
-                  title="Stjerne med valgt antall tagger" onclick={() => setPolygonMode(true)}>★ Stjerne</button>
+                  title={config.texts.plantegningPolygonStar} onclick={() => setPolygonMode(true)}>★ Stjerne</button>
         </div>
       </div>
     {/if}
 
     <fieldset class="mode">
-      <legend>Modus</legend>
-      <label><input type="radio" name="mode" value="solid" checked={single.mode === 'solid'} onchange={() => setMode('solid')} /> Solid</label>
-      <label><input type="radio" name="mode" value="hole" checked={single.mode === 'hole'} onchange={() => setMode('hole')} /> Hull</label>
+      <legend>{config.texts.plantegningMode}</legend>
+      <label><input type="radio" name="mode" value="solid" checked={single.mode === 'solid'} onchange={() => setMode('solid')} /> {config.texts.plantegningModeSolid}</label>
+      <label><input type="radio" name="mode" value="hole" checked={single.mode === 'hole'} onchange={() => setMode('hole')} /> {config.texts.plantegningModeHole}</label>
     </fieldset>
   {:else if multi}
-    <p class="multi-info">{selectedFigures.length} figurer valgt</p>
+    <p class="multi-info">{interpolate(config.texts.plantegningSelectedCount, { count: selectedFigures.length })}</p>
     <div class="align-grid">
-      <button onclick={alignLeft}    title="Venstre-juster">⟸</button>
-      <button onclick={centerH}      title="Sentrer horisontalt">⇔</button>
-      <button onclick={alignRight}   title="Høyre-juster">⟹</button>
-      <button onclick={alignTop}     title="Topp-juster">⤒</button>
-      <button onclick={centerV}      title="Sentrer vertikalt">⇕</button>
-      <button onclick={alignBottom}  title="Bunn-juster">⤓</button>
+      <button onclick={alignLeft}    title={config.texts.plantegningAlignLeft}>⟸</button>
+      <button onclick={centerH}      title={config.texts.plantegningAlignCenterH}>⇔</button>
+      <button onclick={alignRight}   title={config.texts.plantegningAlignRight}>⟹</button>
+      <button onclick={alignTop}     title={config.texts.plantegningAlignTop}>⤒</button>
+      <button onclick={centerV}      title={config.texts.plantegningAlignCenterV}>⇕</button>
+      <button onclick={alignBottom}  title={config.texts.plantegningAlignBottom}>⤓</button>
     </div>
   {/if}
 
   <hr />
 
-  <label class="height">3D-høyde (mm)
+  <label class="height">{config.texts.plantegning3DHeight}
     <input type="number" step="0.5" min="0.5" bind:value={store.extrudeHeight} />
   </label>
 </div>

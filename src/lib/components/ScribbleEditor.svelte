@@ -1,6 +1,9 @@
 <!-- Copyright (C) 2026 Skaperiet (Joachim Haagen Skeie) — SPDX-License-Identifier: AGPL-3.0-only -->
 <script lang="ts">
   import ScribblePreview3D from './ScribblePreview3D.svelte';
+  import { getAkseConfig } from '$lib/config';
+
+  const config = getAkseConfig();
 
   let { onCommit, onClose } = $props<{
     onCommit: (paths: number[][], fill: boolean) => void;
@@ -253,7 +256,7 @@
 
   function handleCommit() {
     if (allPaths.length === 0) {
-      alert('Tegn minst én strek først');
+      alert(config.texts.scribbleNoPathsError);
       return;
     }
     onCommit(toMmPaths(allPaths), fillMode);
@@ -265,18 +268,14 @@
 <div class="modal-backdrop" onclick={onClose} role="presentation">
   <div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
     <div class="modal-header">
-      <h2><i class="fa-solid fa-pencil" aria-hidden="true"></i> Tegn en figur</h2>
-      <button type="button" class="close" onclick={onClose} aria-label="Lukk" title="Lukk">
+      <h2><i class="fa-solid fa-pencil" aria-hidden="true"></i> {config.texts.scribbleTitle}</h2>
+      <button type="button" class="close" onclick={onClose} aria-label={config.texts.commonClose} title={config.texts.commonClose}>
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
     <p class="hint">
-      Tegn én eller flere streker.
-      {#if fillMode}
-        Streken behandles som en lukket figur som fylles og ekstruderes.
-      {:else}
-        Hver strek blir til en tykk linje (3mm) ekstrudert til 20mm høy.
-      {/if}
+      {config.texts.scribbleHintIntro}
+      {fillMode ? config.texts.scribbleHintFillMode : config.texts.scribbleHintLineMode}
     </p>
     <div class="tool-row">
       <button
@@ -284,22 +283,22 @@
         class="tool-btn"
         class:active={tool === 'draw'}
         onclick={() => velgVerktoy('draw')}
-        title="Tegn streker"
+        title={config.texts.scribbleDrawTooltip}
       >
-        <i class="fa-solid fa-pencil" aria-hidden="true"></i> Tegn
+        <i class="fa-solid fa-pencil" aria-hidden="true"></i> {config.texts.scribbleDraw}
       </button>
       <button
         type="button"
         class="tool-btn"
         class:active={tool === 'erase'}
         onclick={() => velgVerktoy('erase')}
-        title="Visk bort der du gnir"
+        title={config.texts.scribbleEraseTooltip}
       >
-        <i class="fa-solid fa-eraser" aria-hidden="true"></i> Viskelær
+        <i class="fa-solid fa-eraser" aria-hidden="true"></i> {config.texts.scribbleErase}
       </button>
       <label class="fill-toggle">
         <input type="checkbox" bind:checked={fillMode} />
-        Fyll figur (lukk og fyll streken)
+        {config.texts.scribbleFillToggle}
       </label>
     </div>
     <div class="editor-row">
@@ -315,23 +314,23 @@
         onpointerleave={handlePointerLeave}
       ></canvas>
       <div class="side">
-        <span class="side-label">3D-forhåndsvisning</span>
+        <span class="side-label">{config.texts.scribblePreview3D}</span>
         <ScribblePreview3D paths={mmPaths} fill={fillMode} />
       </div>
     </div>
     <div class="actions">
-      <button type="button" class="secondary" onclick={undo} disabled={!canUndo} title="Angre (Ctrl/Cmd+Z)">
-        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Angre
+      <button type="button" class="secondary" onclick={undo} disabled={!canUndo} title={config.texts.scribbleUndoTooltip}>
+        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {config.texts.topbarUndo}
       </button>
-      <button type="button" class="secondary" onclick={redo} disabled={!canRedo} title="Gjør om (Ctrl/Cmd+Shift+Z)">
-        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Gjør om
+      <button type="button" class="secondary" onclick={redo} disabled={!canRedo} title={config.texts.scribbleRedoTooltip}>
+        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> {config.texts.topbarRedo}
       </button>
       <button type="button" class="secondary" onclick={handleClear} disabled={allPaths.length === 0}>
-        <i class="fa-solid fa-eraser" aria-hidden="true"></i> Tøm
+        <i class="fa-solid fa-eraser" aria-hidden="true"></i> {config.texts.scribbleClear}
       </button>
-      <button type="button" class="secondary" onclick={onClose}>Avbryt</button>
+      <button type="button" class="secondary" onclick={onClose}>{config.texts.commonCancel}</button>
       <button type="button" class="primary" onclick={handleCommit}>
-        <i class="fa-solid fa-cube" aria-hidden="true"></i> Lag 3D-modell
+        <i class="fa-solid fa-cube" aria-hidden="true"></i> {config.texts.plantegningCreateModel}
       </button>
     </div>
   </div>

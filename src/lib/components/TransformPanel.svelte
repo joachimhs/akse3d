@@ -4,6 +4,10 @@
   import { getContext } from 'svelte';
   import { ProjectStore, STORE_CONTEXT_KEY } from '$lib/akse/ProjectStore.svelte';
   import { DEFAULT_COLORS } from '$lib/models';
+  import { getAkseConfig } from '$lib/config';
+  import { interpolate, type AkseTexts } from '$lib/texts';
+
+  const config = getAkseConfig();
 
   const store = getContext<ProjectStore>(STORE_CONTEXT_KEY);
 
@@ -157,16 +161,16 @@
   // --- Juster-matrise (3×3, sett ovenfra) ---
   // Rader topp→bunn på skjermen: «Topp» = bak i scenen (+Y), «Bunn» = foran (−Y).
   type AlignEdge = 'min' | 'mid' | 'max';
-  const ALIGN_MATRIX: { x: AlignEdge; y: AlignEdge; label: string }[] = [
-    { x: 'min', y: 'max', label: 'Topp venstre' },
-    { x: 'mid', y: 'max', label: 'Topp midt' },
-    { x: 'max', y: 'max', label: 'Topp høyre' },
-    { x: 'min', y: 'mid', label: 'Senter venstre' },
-    { x: 'mid', y: 'mid', label: 'Midtstilt' },
-    { x: 'max', y: 'mid', label: 'Senter høyre' },
-    { x: 'min', y: 'min', label: 'Bunn venstre' },
-    { x: 'mid', y: 'min', label: 'Bunn midt' },
-    { x: 'max', y: 'min', label: 'Bunn høyre' },
+  const ALIGN_MATRIX: { x: AlignEdge; y: AlignEdge; labelKey: keyof AkseTexts }[] = [
+    { x: 'min', y: 'max', labelKey: 'transformAlignTopLeft' },
+    { x: 'mid', y: 'max', labelKey: 'transformAlignTopCenter' },
+    { x: 'max', y: 'max', labelKey: 'transformAlignTopRight' },
+    { x: 'min', y: 'mid', labelKey: 'transformAlignMiddleLeft' },
+    { x: 'mid', y: 'mid', labelKey: 'transformAlignMiddleCenter' },
+    { x: 'max', y: 'mid', labelKey: 'transformAlignMiddleRight' },
+    { x: 'min', y: 'min', labelKey: 'transformAlignBottomLeft' },
+    { x: 'mid', y: 'min', labelKey: 'transformAlignBottomCenter' },
+    { x: 'max', y: 'min', labelKey: 'transformAlignBottomRight' },
   ];
   // Prikk-posisjon i ikonet (SVG viewBox 0–20): venstre/topp=6, midt=10, høyre/bunn=14
   const dotPos = (edge: AlignEdge, invert = false): number =>
@@ -243,13 +247,13 @@
 
 <div class="transform-panel">
   {#if selected.length === 0}
-    <p class="empty">Velg en figur for å redigere</p>
+    <p class="empty">{config.texts.transformEmptyState}</p>
   {:else if single}
-    <div class="panel-header">Egenskaper</div>
+    <div class="panel-header">{config.texts.transformPropertiesHeader}</div>
 
     {#if single.kind === 'text'}
       <div class="prop-section">
-        <h4 class="property-label">Tekst</h4>
+        <h4 class="property-label">{config.texts.transformText}</h4>
         <input
           type="text"
           class="dim-input text-field"
@@ -262,20 +266,20 @@
     {#if single.kind === 'sketch'}
       <div class="prop-section">
         <button type="button" class="edit-sketch-btn" onclick={() => store.requestEditSketch(single.id)}>
-          <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i> Rediger plantegning
+          <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i> {config.texts.transformEditSketch}
         </button>
       </div>
     {/if}
 
     <div class="prop-section">
-      <h4 class="property-label">Posisjon (mm) — venstre hjørne</h4>
+      <h4 class="property-label">{config.texts.transformPositionLabel}</h4>
       <div class="vec3">
         {#each ['X', 'Y', 'Z'] as axis, i}
           <div class="dim-field">
             <label for="pos-{axis}">{axis}</label>
             <div class="input-row">
               {#if store.inputMode === 'touch'}
-                <button type="button" class="step-btn" onclick={() => patchCornerPosition(i as 0|1|2, getCorner(i as 0|1|2) - 1)} aria-label="Reduser {axis}">−</button>
+                <button type="button" class="step-btn" onclick={() => patchCornerPosition(i as 0|1|2, getCorner(i as 0|1|2) - 1)} aria-label={interpolate(config.texts.transformDecreaseAxis, { axis })}>−</button>
               {/if}
               <input
                 id="pos-{axis}"
@@ -286,7 +290,7 @@
                 oninput={(e) => patchCornerPosition(i as 0|1|2, Number(e.currentTarget.value))}
               />
               {#if store.inputMode === 'touch'}
-                <button type="button" class="step-btn" onclick={() => patchCornerPosition(i as 0|1|2, getCorner(i as 0|1|2) + 1)} aria-label="Øk {axis}">+</button>
+                <button type="button" class="step-btn" onclick={() => patchCornerPosition(i as 0|1|2, getCorner(i as 0|1|2) + 1)} aria-label={interpolate(config.texts.transformIncreaseAxis, { axis })}>+</button>
               {/if}
             </div>
           </div>
@@ -295,9 +299,9 @@
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Rotasjon (°)</h4>
+      <h4 class="property-label">{config.texts.transformRotationLabel}</h4>
       <div class="snap-row">
-        <span class="snap-label">Snap:</span>
+        <span class="snap-label">{config.texts.transformSnap}</span>
         {#each [1, 22.5, 45, 90] as deg}
           <button
             type="button"
@@ -321,7 +325,7 @@
               oninput={(e) => patch('rotation', i as 0|1|2, Number(e.currentTarget.value))}
               onfocus={() => store.beginTransaction()}
               onblur={() => store.endTransaction()}
-              aria-label="Roter rundt {axis}-aksen"
+              aria-label={interpolate(config.texts.transformRotateAxis, { axis })}
             />
             <input
               type="number"
@@ -331,7 +335,7 @@
               step="1"
               value={Math.round(normRot(single.rotation[i]))}
               oninput={(e) => patch('rotation', i as 0|1|2, Number(e.currentTarget.value))}
-              aria-label="Rotasjon rundt {axis}-aksen i grader"
+              aria-label={interpolate(config.texts.transformRotationAxisDegrees, { axis })}
             />
             <span class="rot-unit">°</span>
           </div>
@@ -340,7 +344,7 @@
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Størrelse (mm)</h4>
+      <h4 class="property-label">{config.texts.transformSizeLabel}</h4>
       <div class="vec3">
         {#each ['B', 'D', 'H'] as axis, i}
           {@const sketchLocked = single.kind === 'sketch' && (i === 0 || i === 1)}
@@ -348,7 +352,7 @@
             <label for="size-{axis}">{axis}</label>
             <div class="input-row">
               {#if store.inputMode === 'touch' && !sketchLocked}
-                <button type="button" class="step-btn" onclick={() => patch('size', i as 0|1|2, Math.max(1, single.size[i] - 1))} aria-label="Reduser størrelse {axis}">−</button>
+                <button type="button" class="step-btn" onclick={() => patch('size', i as 0|1|2, Math.max(1, single.size[i] - 1))} aria-label={interpolate(config.texts.transformDecreaseSize, { axis })}>−</button>
               {/if}
               <input
                 id="size-{axis}"
@@ -358,23 +362,23 @@
                 class="dim-input"
                 value={single.size[i]}
                 disabled={sketchLocked}
-                title={sketchLocked ? 'Endre i Plantegning-editor' : ''}
+                title={sketchLocked ? config.texts.transformSketchLockedTooltip : ''}
                 oninput={(e) => patch('size', i as 0|1|2, Number(e.currentTarget.value))}
               />
               {#if store.inputMode === 'touch' && !sketchLocked}
-                <button type="button" class="step-btn" onclick={() => patch('size', i as 0|1|2, single.size[i] + 1)} aria-label="Øk størrelse {axis}">+</button>
+                <button type="button" class="step-btn" onclick={() => patch('size', i as 0|1|2, single.size[i] + 1)} aria-label={interpolate(config.texts.transformIncreaseSize, { axis })}>+</button>
               {/if}
             </div>
           </div>
         {/each}
       </div>
       {#if single.kind === 'sketch'}
-        <p class="hint">Bredde og dybde redigeres i Plantegning-editoren.</p>
+        <p class="hint">{config.texts.transformSizeSketchHint}</p>
       {/if}
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Skaler (%)</h4>
+      <h4 class="property-label">{config.texts.transformScaleLabel}</h4>
       <div class="scale-row">
         <input
           type="number"
@@ -384,9 +388,9 @@
           class="dim-input"
           bind:value={scalePercent}
           disabled={scaleLocked}
-          title={scaleLocked ? 'Skaler i Plantegning-editoren' : 'Prosent av nåværende størrelse'}
+          title={scaleLocked ? config.texts.transformScaleSketchLockedTooltip : config.texts.transformScalePercentTooltip}
           onkeydown={(e) => { if (e.key === 'Enter') applyScale(); }}
-          aria-label="Skaleringsprosent"
+          aria-label={config.texts.transformScalePercent}
         />
         <button
           type="button"
@@ -394,7 +398,7 @@
           onclick={applyScale}
           disabled={scaleLocked}
         >
-          Skaler
+          {config.texts.transformScaleApply}
         </button>
       </div>
       <div class="scale-slider-row">
@@ -409,37 +413,37 @@
           oninput={(e) => { scalePercent = Number(e.currentTarget.value); liveScale(scalePercent); }}
           onfocus={beginLiveScale}
           onblur={endLiveScale}
-          aria-label="Skaler figuren med slider"
+          aria-label={config.texts.transformScaleSlider}
         />
         <span class="scale-slider-label">300%</span>
       </div>
       {#if scaleLocked}
-        <p class="hint">Plantegninger skaleres i Plantegning-editoren.</p>
+        <p class="hint">{config.texts.transformScaleSketchHint}</p>
       {:else}
-        <p class="hint">100 % = uendret, 200 % = dobbel størrelse, 50 % = halv.</p>
+        <p class="hint">{config.texts.transformScaleHint}</p>
       {/if}
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Modus <span class="hotkey-hint">(H)</span></h4>
+      <h4 class="property-label">{config.texts.transformModeLabel} <span class="hotkey-hint">{config.texts.transformModeHotkey}</span></h4>
       <label class="toggle-row mode-toggle-row">
-        <span class="mode-option" class:active={single.mode === 'solid'}>Solid</span>
+        <span class="mode-option" class:active={single.mode === 'solid'}>{config.texts.transformSolid}</span>
         <button
           type="button"
           class="toggle-switch"
           class:on={single.mode === 'hole'}
-          aria-label="Veksle mellom solid og hull"
+          aria-label={config.texts.transformToggleSolidHole}
           aria-pressed={single.mode === 'hole'}
           onclick={() => patchMode(single.mode === 'hole' ? 'solid' : 'hole')}
         >
           <span class="toggle-slider"></span>
         </button>
-        <span class="mode-option" class:active={single.mode === 'hole'}>Hull</span>
+        <span class="mode-option" class:active={single.mode === 'hole'}>{config.texts.transformHole}</span>
       </label>
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Farge</h4>
+      <h4 class="property-label">{config.texts.transformColorLabel}</h4>
       <div class="color-grid">
         {#each DEFAULT_COLORS as c}
           <button
@@ -447,7 +451,7 @@
             class="color-swatch"
             class:active={single.color === c}
             style="background: {c};"
-            aria-label="Farge {c}"
+            aria-label={interpolate(config.texts.transformColorSwatch, { color: c })}
             title={c}
             onclick={() => patchColor(c)}
           ></button>
@@ -458,15 +462,15 @@
         class="color-input-fallback"
         value={single.color}
         oninput={(e) => patchColor(e.currentTarget.value)}
-        title="Egendefinert farge"
-        aria-label="Egendefinert farge"
+        title={config.texts.transformCustomColor}
+        aria-label={config.texts.transformCustomColor}
       />
     </div>
   {:else if groupBox}
-    <div class="panel-header">{selected.length} figurer valgt</div>
+    <div class="panel-header">{interpolate(config.texts.transformMultiSelectHeader, { count: selected.length })}</div>
 
     <div class="prop-section">
-      <h4 class="property-label">Gruppe-posisjon (mm)</h4>
+      <h4 class="property-label">{config.texts.transformGroupPositionLabel}</h4>
       <div class="vec3">
         {#each ['X', 'Y', 'Z'] as axis, i}
           <div class="dim-field">
@@ -485,7 +489,7 @@
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Gruppe-størrelse (mm)</h4>
+      <h4 class="property-label">{config.texts.transformGroupSizeLabel}</h4>
       <div class="vec3">
         {#each ['B', 'D', 'H'] as axis, i}
           <div class="dim-field">
@@ -505,9 +509,9 @@
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Juster</h4>
-      <div class="align-matrix" role="group" aria-label="Juster figurene (sett ovenfra)">
-        {#each ALIGN_MATRIX as cell (cell.label)}
+      <h4 class="property-label">{config.texts.transformAlignLabel}</h4>
+      <div class="align-matrix" role="group" aria-label={config.texts.transformAlignGroup}>
+        {#each ALIGN_MATRIX as cell (cell.labelKey)}
           <button
             type="button"
             class="matrix-btn"
@@ -517,8 +521,8 @@
             onmouseleave={() => store.clearAlignPreview()}
             onfocus={() => store.previewAlignXY(cell.x, cell.y)}
             onblur={() => store.clearAlignPreview()}
-            title={cell.label}
-            aria-label={cell.label}
+            title={config.texts[cell.labelKey]}
+            aria-label={config.texts[cell.labelKey]}
           >
             <svg viewBox="0 0 20 20" aria-hidden="true">
               <rect x="2" y="2" width="16" height="16" rx="2"
@@ -532,7 +536,7 @@
         {/each}
       </div>
       {#if selected.length >= 3}
-        <h4 class="property-label distribute-label">Fordel jevnt</h4>
+        <h4 class="property-label distribute-label">{config.texts.transformDistributeLabel}</h4>
         <div class="distribute-row">
           <button
             type="button"
@@ -543,9 +547,9 @@
             onmouseleave={() => store.clearAlignPreview()}
             onfocus={() => store.previewDistribute(0)}
             onblur={() => store.clearAlignPreview()}
-            title="Lik avstand mellom figurene i bredden"
+            title={config.texts.transformDistributeWidthTooltip}
           >
-            I bredden
+            {config.texts.transformDistributeWidth}
           </button>
           <button
             type="button"
@@ -556,16 +560,16 @@
             onmouseleave={() => store.clearAlignPreview()}
             onfocus={() => store.previewDistribute(1)}
             onblur={() => store.clearAlignPreview()}
-            title="Lik avstand mellom figurene i dybden"
+            title={config.texts.transformDistributeDepthTooltip}
           >
-            I dybden
+            {config.texts.transformDistributeDepth}
           </button>
         </div>
       {/if}
     </div>
 
     <div class="prop-section">
-      <h4 class="property-label">Skaler (%)</h4>
+      <h4 class="property-label">{config.texts.transformGroupScaleLabel}</h4>
       <div class="scale-row">
         <input
           type="number"
@@ -574,12 +578,12 @@
           max="1000"
           class="dim-input"
           bind:value={scalePercent}
-          title="Prosent av nåværende størrelse"
+          title={config.texts.transformGroupScaleTooltip}
           onkeydown={(e) => { if (e.key === 'Enter') applyGroupScale(); }}
-          aria-label="Skaleringsprosent for gruppen"
+          aria-label={config.texts.transformGroupScalePercent}
         />
         <button type="button" class="scale-apply-btn" onclick={applyGroupScale}>
-          Skaler
+          {config.texts.transformGroupScaleApply}
         </button>
       </div>
       <div class="scale-slider-row">
@@ -593,11 +597,11 @@
           oninput={(e) => { scalePercent = Number(e.currentTarget.value); liveScale(scalePercent); }}
           onfocus={beginLiveScale}
           onblur={endLiveScale}
-          aria-label="Skaler gruppen med slider"
+          aria-label={config.texts.transformGroupScaleSlider}
         />
         <span class="scale-slider-label">300%</span>
       </div>
-      <p class="hint">Skalerer alle valgte figurer rundt gruppens midtpunkt.</p>
+      <p class="hint">{config.texts.transformGroupScaleHint}</p>
     </div>
 
   {/if}

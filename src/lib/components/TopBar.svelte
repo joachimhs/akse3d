@@ -42,10 +42,10 @@
 
   function handleNewProject() {
     if (store.readOnly) return;
-    if (!confirm('Forkast nåværende prosjekt og start på nytt?')) return;
+    if (!confirm(config.texts.topbarConfirmNewProject)) return;
     const user = store.currentUser;
     store.init(
-      { ...store.project, id: generateUuidIsh(), name: 'Nytt prosjekt', shapes: [], user } as any,
+      { ...store.project, id: generateUuidIsh(), name: config.texts.topbarNewProject, shapes: [], user } as any,
       user,
       false,
       false,  // ikke i cloud før første save
@@ -54,12 +54,12 @@
 
   function handleClone() {
     if (!config.session.authenticated) {
-      alert('Du må være logget inn for å lage en kopi');
+      alert(config.texts.topbarLoginRequiredForClone);
       return;
     }
     const user = config.session.user!;
     store.init(
-      { ...store.project, id: generateUuidIsh(), user, name: store.project.name + ' (kopi)' } as any,
+      { ...store.project, id: generateUuidIsh(), user, name: store.project.name + config.texts.topbarClonedProjectSuffix } as any,
       user,
       false,
       false,  // klonen er ikke i cloud før første save
@@ -71,11 +71,11 @@
 </script>
 
 <div class="toolbar">
-  <div class="akse-logo" title="Akse — en Skaperiet tjeneste">
+  <div class="akse-logo" title={config.texts.topbarLogoTitle}>
     <i class="fa-solid fa-cube logo-icon"></i>
     <span class="logo-stack">
       <span class="logo-text">Akse</span>
-      <span class="logo-tagline">En <strong>Skaperiet</strong> tjeneste</span>
+      <span class="logo-tagline">{config.texts.topbarLogoTaglineBefore}<strong>Skaperiet</strong>{config.texts.topbarLogoTaglineAfter}</span>
     </span>
   </div>
 
@@ -86,7 +86,7 @@
     oninput={(e) => store.setName(e.currentTarget.value)}
     onfocus={selectAllOnFocus}
     disabled={store.readOnly}
-    placeholder="Navn på prosjekt"
+    placeholder={config.texts.topbarProjectNamePlaceholder}
   />
 
   <div class="divider"></div>
@@ -97,8 +97,8 @@
       class="tool-button"
       onclick={handleNewProject}
       disabled={store.readOnly}
-      title="Nytt prosjekt"
-      aria-label="Nytt prosjekt"
+      title={config.texts.topbarNewProject}
+      aria-label={config.texts.topbarNewProject}
     >
       <i class="fa-solid fa-file"></i>
     </button>
@@ -107,8 +107,8 @@
         type="button"
         class="tool-button"
         onclick={() => config.onOpenGuides?.()}
-        title="Start en guide"
-        aria-label="Start en guide"
+        title={config.texts.topbarStartGuide}
+        aria-label={config.texts.topbarStartGuide}
       >
         <i class="fa-solid fa-graduation-cap"></i>
       </button>
@@ -117,8 +117,8 @@
       type="button"
       class="tool-button"
       onclick={() => (showOpenModal = true)}
-      title="Åpne prosjekt"
-      aria-label="Åpne prosjekt"
+      title={config.texts.topbarOpenProject}
+      aria-label={config.texts.topbarOpenProject}
     >
       <i class="fa-solid fa-folder-open"></i>
     </button>
@@ -127,8 +127,8 @@
       class="tool-button"
       onclick={() => (showSaveModal = true)}
       disabled={store.readOnly}
-      title="Lagre prosjekt"
-      aria-label="Lagre prosjekt"
+      title={config.texts.topbarSaveProject}
+      aria-label={config.texts.topbarSaveProject}
     >
       <i class="fa-solid fa-floppy-disk"></i>
       {#if isDirty && !store.readOnly}
@@ -145,8 +145,8 @@
       class="tool-button"
       onclick={() => store.undo()}
       disabled={!store.canUndo || store.readOnly}
-      title="Angre (Ctrl+Z)"
-      aria-label="Angre"
+      title={config.texts.topbarUndoTitle}
+      aria-label={config.texts.topbarUndo}
     >
       <i class="fa-solid fa-rotate-left"></i>
     </button>
@@ -155,8 +155,8 @@
       class="tool-button"
       onclick={() => store.redo()}
       disabled={!store.canRedo || store.readOnly}
-      title="Gjør om (Ctrl+Shift+Z)"
-      aria-label="Gjør om"
+      title={config.texts.topbarRedoTitle}
+      aria-label={config.texts.topbarRedo}
     >
       <i class="fa-solid fa-rotate-right"></i>
     </button>
@@ -170,8 +170,8 @@
       class="tool-button"
       onclick={() => store.copySelected()}
       disabled={store.selectedIds.size === 0 || store.readOnly}
-      title="Kopier valgte figurer (Ctrl+C)"
-      aria-label="Kopier"
+      title={config.texts.topbarCopyTitle}
+      aria-label={config.texts.topbarCopy}
     >
       <i class="fa-solid fa-copy"></i>
     </button>
@@ -180,8 +180,8 @@
       class="tool-button"
       onclick={() => store.paste()}
       disabled={!store.canPaste || store.readOnly}
-      title="Lim inn (Ctrl+V)"
-      aria-label="Lim inn"
+      title={config.texts.topbarPasteTitle}
+      aria-label={config.texts.topbarPaste}
     >
       <i class="fa-solid fa-paste"></i>
     </button>
@@ -190,8 +190,8 @@
       class="tool-button"
       onclick={() => store.duplicateSelected()}
       disabled={store.selectedIds.size === 0 || store.readOnly}
-      title="Klon og kopier (Ctrl+D) — flytt klonen og klikk igjen for å gjenta mønsteret"
-      aria-label="Klon og kopier"
+      title={config.texts.topbarDuplicateTitle}
+      aria-label={config.texts.topbarDuplicate}
     >
       <i class="fa-solid fa-clone"></i>
     </button>
@@ -204,8 +204,8 @@
       type="button"
       class="tool-button stl-button"
       onclick={handleExportSTL}
-      title="Eksporter STL (for 3D-printing)"
-      aria-label="Eksporter STL"
+      title={config.texts.topbarExportStlTitle}
+      aria-label={config.texts.topbarExportStl}
     >
       <i class="fa-solid fa-cube"></i>
       <span class="stl-label">STL</span>
@@ -218,18 +218,26 @@
     type="button"
     class="tool-button theme-button"
     onclick={() => store.toggleSceneTheme()}
-    title={store.sceneTheme === 'dark' ? 'Bytt til lys bakgrunn' : 'Bytt til mørk bakgrunn'}
-    aria-label="Bytt bakgrunn i hovedområdet"
+    title={store.sceneTheme === 'dark' ? config.texts.topbarThemeToLight : config.texts.topbarThemeToDark}
+    aria-label={config.texts.topbarThemeToggle}
     aria-pressed={store.sceneTheme === 'light'}
   >
     <i class="fa-solid fa-circle-half-stroke"></i>
-    <span class="theme-label">{store.sceneTheme === 'dark' ? 'Mørk' : 'Lys'}</span>
+    <span class="theme-label">{store.sceneTheme === 'dark' ? config.texts.topbarThemeDark : config.texts.topbarThemeLight}</span>
   </button>
 
+  <button
+    type="button"
+    class="tool-btn lang-toggle"
+    onclick={() => config.setLocale(config.locale === 'no' ? 'en' : 'no')}
+    title={config.texts.topbarLanguageToggle}
+    aria-label={config.texts.topbarLanguageToggle}
+  >{config.locale === 'no' ? 'EN' : 'NO'}</button>
+
   {#if store.readOnly}
-    <button type="button" class="primary-btn" onclick={handleClone} title="Ta en kopi du kan redigere">
+    <button type="button" class="primary-btn" onclick={handleClone} title={config.texts.topbarCloneTitle}>
       <i class="fa-solid fa-copy"></i>
-      Ta en kopi
+      {config.texts.topbarClone}
     </button>
   {/if}
 </div>

@@ -29,13 +29,13 @@
       if (ok) onClose();
     } catch (e) {
       console.error(e);
-      diskErr = 'Klarte ikke lagre til fil.';
+      diskErr = config.texts.modalSaveWriteFileError;
     }
   }
 
   async function saveOnline() {
     if (store.readOnly) {
-      saveErr = 'Prosjektet er skrivebeskyttet — bruk "Ta en kopi" først.';
+      saveErr = config.texts.modalSaveReadOnlyError;
       return;
     }
     saving = true;
@@ -46,7 +46,7 @@
       setTimeout(onClose, 700);
     } catch (e) {
       console.error(e);
-      saveErr = 'Klarte ikke lagre — sjekk at du er innlogget og prøv igjen.';
+      saveErr = config.texts.modalSaveOnlineError;
     } finally {
       saving = false;
     }
@@ -60,17 +60,17 @@
 
 <div class="modal-backdrop" onclick={onClose} role="presentation">
   <div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-    <button class="close" onclick={onClose} aria-label="Lukk" title="Lukk">
+    <button class="close" onclick={onClose} aria-label={config.texts.commonClose} title={config.texts.commonClose}>
       <i class="fa-solid fa-xmark"></i>
     </button>
     <div class="grid">
       <div class="col left">
         <div class="section">
-          <div class="section-title"><i class="fa-solid fa-floppy-disk"></i> Lagre til fil</div>
-          <p>Lagre prosjektet som JSON-fil på din egen PC. Du kan dele filen med andre, eller åpne den i Akse senere.</p>
+          <div class="section-title"><i class="fa-solid fa-floppy-disk"></i> {config.texts.modalSaveLocalSectionTitle}</div>
+          <p>{config.texts.modalSaveLocalSectionDesc}</p>
           <label class="field">
-            Filnavn:
-            <input type="text" bind:value={localFilename} onfocus={selectAllOnFocus} placeholder="Filnavn (uten .json)" />
+            {config.texts.modalSaveFilename}
+            <input type="text" bind:value={localFilename} onfocus={selectAllOnFocus} placeholder={config.texts.modalSaveFilenamePlaceholder} />
           </label>
           {#if diskErr}<div class="error-msg">{diskErr}</div>{/if}
           <button
@@ -79,7 +79,7 @@
             disabled={!config.capabilities.diskFile.available}
             title={config.capabilities.diskFile.available ? '' : config.capabilities.diskFile.reason}
           >
-            <i class="fa-solid fa-floppy-disk"></i> Lagre til fil…
+            <i class="fa-solid fa-floppy-disk"></i> {config.texts.modalSaveToFile}
           </button>
           <button
             class="btn big"
@@ -87,7 +87,7 @@
             disabled={!config.capabilities.download.available}
             title={config.capabilities.download.available ? '' : config.capabilities.download.reason}
           >
-            <i class="fa-solid fa-download"></i> Last ned (.json)
+            <i class="fa-solid fa-download"></i> {config.texts.modalSaveDownload}
           </button>
         </div>
       </div>
@@ -100,31 +100,31 @@
           {:else if !config.session.authenticated}
             <p class="login-msg">{config.texts.cloudSaveLoginRequired}</p>
           {:else if store.readOnly}
-            <p class="login-msg">Dette prosjektet er delt fra en annen bruker. Trykk "Ta en kopi" i toppmenyen for å lagre din egen versjon.</p>
+            <p class="login-msg">{config.texts.modalSaveSharedMsg}</p>
           {:else}
             <p>{config.texts.cloudSaveIntro}</p>
             <label class="field">
-              Navn:
+              {config.texts.modalSaveName}
               <input type="text"
                      value={store.project.name}
                      oninput={(e) => store.setName(e.currentTarget.value)}
                      onfocus={selectAllOnFocus}
-                     placeholder="Navngi prosjektet ditt" />
+                     placeholder={config.texts.modalSaveNamePlaceholder} />
             </label>
             <label class="field">
-              Beskrivelse (maks 150 tegn):
+              {config.texts.modalSaveDescription}
               <textarea maxlength="150"
                         value={store.project.description ?? ''}
                         oninput={(e) => store.setDescription(e.currentTarget.value)}
-                        placeholder="Beskriv prosjektet ditt"
+                        placeholder={config.texts.modalSaveDescriptionPlaceholder}
                         rows="3"></textarea>
             </label>
             {#if saveErr}<div class="error-msg">{saveErr}</div>{/if}
             <button class="btn primary big" disabled={saving} onclick={saveOnline}>
               {#if saving}
-                <i class="fa-solid fa-spinner fa-spin"></i> Lagrer…
+                <i class="fa-solid fa-spinner fa-spin"></i> {config.texts.modalSaveSaving}
               {:else if saveOk}
-                <i class="fa-solid fa-check"></i> Lagret!
+                <i class="fa-solid fa-check"></i> {config.texts.modalSaveSaved}
               {:else}
                 <i class="fa-solid fa-cloud-arrow-up"></i> {config.texts.cloudSaveTitle}
               {/if}

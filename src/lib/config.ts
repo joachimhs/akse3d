@@ -4,7 +4,7 @@
 import { getContext, setContext } from 'svelte';
 import type { AkseProject, AkseProjectSummary } from '$lib/models';
 import type { StorageCapabilities } from '$lib/capabilities';
-import type { AkseTexts } from '$lib/texts';
+import type { AkseTexts, AkseLocale } from '$lib/texts';
 
 /** PORT UT — persistens. Host implementerer mot sin backend. */
 export interface AkseStoragePort {
@@ -27,6 +27,10 @@ export interface AkseConfig {
   session: AkseSession;
   capabilities: StorageCapabilities;
   texts: AkseTexts;
+  /** Aktiv locale (reaktiv — les i template for live språkbytte). */
+  locale: AkseLocale;
+  /** Bytt locale (persisteres i localStorage av Akse.svelte). */
+  setLocale: (locale: AkseLocale) => void;
   onProjectIdChange?: (id: string) => void;
   /**
    * Host vil tilby guider: TopBar viser en «Start en guide»-knapp som kaller

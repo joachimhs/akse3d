@@ -13,7 +13,10 @@
   import { CsgEngine, CSG_ENGINE_CONTEXT_KEY, buildShapeGeometry, type CompiledMesh } from '$lib/akse/csgEngine';
   import { buildGeometry, defaultsForKind, applyTransform } from '$lib/akse/shapes';
   import type { Shape, ShapeKind } from '$lib/models';
+  import { getAkseConfig } from '$lib/config';
+  import { interpolate } from '$lib/texts';
 
+  const config = getAkseConfig();
   const store = getContext<ProjectStore>(STORE_CONTEXT_KEY);
   // Delt CsgEngine — opprettet og eid av Akse.svelte. Gjenbrukes av STL-eksporten,
   // så geometrien ikke må re-kompileres fra bunnen av ved nedlasting.
@@ -1589,11 +1592,11 @@
       type="button"
       class="home-btn"
       onclick={resetCameraView}
-      title="Hjem — roter kameraet tilbake til startvinkelen"
-      aria-label="Hjem — tilbake til startvinkelen"
+      title={config.texts.sceneHomeTooltip}
+      aria-label={config.texts.sceneHomeAria}
     >
       <i class="fa-solid fa-house icon" aria-hidden="true"></i>
-      <span class="label">Hjem</span>
+      <span class="label">{config.texts.sceneHome}</span>
     </button>
 
     {#if showModeBar}
@@ -1604,10 +1607,10 @@
             class="mode-btn"
             class:active={gizmoMode === 'translate'}
             onclick={() => setGizmoMode('translate')}
-            title="Flytt (T)"
+            title={config.texts.sceneMoveTip}
           >
             <i class="fa-solid fa-up-down-left-right icon" aria-hidden="true"></i>
-            <span class="label">Flytt</span>
+            <span class="label">{config.texts.sceneMove}</span>
           </button>
           <div class="divider"></div>
           {#each ROTATE_AXES as a}
@@ -1616,7 +1619,7 @@
               class="axis-btn {a.cls}"
               class:active={gizmoMode === 'rotate' && rotateAxis === a.axis}
               onclick={() => setRotateAxis(a.axis)}
-              title={`Roter rundt ${a.label}-aksen`}
+              title={interpolate(config.texts.sceneRotateAxis, { axis: a.label })}
             >
               <i class="fa-solid fa-rotate-right rot-icon" aria-hidden="true"></i>{a.label}
             </button>
@@ -1630,8 +1633,8 @@
                 class="dir-btn"
                 style:color={activeAxis.color}
                 onclick={() => nudgeRotation(rotateAxis, -1)}
-                title={`Roter mot klokka rundt ${activeAxis.label} (−${store.rotateSnapDeg}°)`}
-                aria-label="Roter mot klokka"
+                title={interpolate(config.texts.sceneRotateCCWTooltip, { axis: activeAxis.label, deg: `−${store.rotateSnapDeg}` })}
+                aria-label={config.texts.sceneRotateCCW}
               ><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></button>
               <input
                 type="range"
@@ -1644,15 +1647,15 @@
                 oninput={(e) => applyRotationAngle(Number(e.currentTarget.value))}
                 onfocus={() => store.beginTransaction()}
                 onblur={() => store.endTransaction()}
-                aria-label={`Roter valgt figur rundt ${activeAxis.label}-aksen`}
+                aria-label={interpolate(config.texts.sceneRotateFigure, { axis: activeAxis.label })}
               />
               <button
                 type="button"
                 class="dir-btn"
                 style:color={activeAxis.color}
                 onclick={() => nudgeRotation(rotateAxis, 1)}
-                title={`Roter med klokka rundt ${activeAxis.label} (+${store.rotateSnapDeg}°)`}
-                aria-label="Roter med klokka"
+                title={interpolate(config.texts.sceneRotateCWTooltip, { axis: activeAxis.label, deg: `+${store.rotateSnapDeg}` })}
+                aria-label={config.texts.sceneRotateCW}
               ><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></button>
               <span class="rotate-value">
                 <span class="rotate-axis" style:color={activeAxis.color}>{activeAxis.label}</span>
@@ -1660,7 +1663,7 @@
               </span>
             </div>
             <div class="snap-row">
-              <span class="snap-label">Snap:</span>
+              <span class="snap-label">{config.texts.transformSnap}</span>
               {#each [1, 22.5, 45, 90] as deg}
                 <button
                   type="button"
@@ -1693,7 +1696,7 @@
     <div class="compiling-overlay">
       <div class="compiling-box">
         <div class="spinner" aria-hidden="true"></div>
-        <span>Kombinerer figurer…</span>
+        <span>{config.texts.sceneCompiling}</span>
       </div>
     </div>
   {/if}

@@ -1,18 +1,18 @@
 # @skaperiet/akse
 
-Akse — 3D-modelleringsverktøy for barn og unge ([akse3d.no](https://akse3d.no) / akse3d.com).
+Akse — a 3D modelling tool for kids and beginners ([akse3d.no](https://akse3d.no) / akse3d.com).
 
-Primitiv-basert 3D-modellering (kube, sylinder, kule, … + boolske hull), plantegning og
-frihåndstegning, med STL-eksport for 3D-printing. Bygget på Svelte 5, Three.js og
-three-bvh-csg. Pakken er **backend-agnostisk**: den henter/lagrer data via porter som host
-implementerer.
+Primitive-based 3D modelling (box, cylinder, sphere, … + boolean holes), a 2D
+blueprint editor and freehand drawing, with STL export for 3D printing. Built on
+Svelte 5, Three.js and three-bvh-csg. The package is **backend-agnostic**: it
+loads/saves data through ports that the host implements.
 
-## Bruk
+## Usage
 
 ```svelte
 <script>
   import { Akse } from '@skaperiet/akse';
-  import '@skaperiet/akse/akse-theme.css'; // valgfritt — host kan definere CSS-variablene selv
+  import '@skaperiet/akse/akse-theme.css'; // optional — the host can define the CSS variables itself
 </script>
 
 <Akse {storage} {session} fontUrl="/fonts/inter-regular.ttf" />
@@ -20,62 +20,64 @@ implementerer.
 
 ### Props
 
-| Prop | Type | Beskrivelse |
+| Prop | Type | Description |
 |---|---|---|
-| `storage` | `AkseStoragePort` | Persistens: `load/create/update/list/remove`. Påkrevd. |
-| `session` | `AkseSession` | `{ user, authenticated }`. Send en reaktiv verdi for live-oppdatering. Påkrevd. |
-| `initialProject` | `AkseProject \| null` | Forhåndslastet prosjekt (f.eks. delt lenke). Valgfritt. |
-| `requestedId` | `string \| null` | Id-anker fra URL for nytt prosjekt. Valgfritt. |
-| `onProjectIdChange` | `(id: string) => void` | Kalles når prosjekt-id endres (host synker URL). Valgfritt. |
-| `fontUrl` | `string` | URL til `.ttf`/`.otf`-font for 3D-tekst. Default `/fonts/inter-regular.ttf`. |
-| `loadError` | `string \| null` | Vis en feilbanner (f.eks. fra host-load). Valgfritt. |
-| `maxStlTriangles` | `number` | Hard grense for STL-import. Default `500000` (standalone). Mesh lagres i prosjekt-JSON (~48 B/trekant), så sky-hosts bør sette lavere — skaperiet.no bruker `100000`. |
-| `guide` | `AkseGuide \| null` | Interaktiv steg-for-steg guide, vist som boble nede til høyre. Valgfritt. |
-| `onGuideClose` | `() => void` | Kalles når brukeren lukker guiden (host nullstiller typisk `guide`). Valgfritt. |
+| `storage` | `AkseStoragePort` | Persistence: `load/create/update/list/remove`. Required. |
+| `session` | `AkseSession` | `{ user, authenticated }`. Pass a reactive value for live updates. Required. |
+| `initialProject` | `AkseProject \| null` | Preloaded project (e.g. a shared link). Optional. |
+| `requestedId` | `string \| null` | Id anchor from the URL for a new project. Optional. |
+| `onProjectIdChange` | `(id: string) => void` | Called when the project id changes (host syncs the URL). Optional. |
+| `fontUrl` | `string` | URL to a `.ttf`/`.otf` font for 3D text. Default `/fonts/inter-regular.ttf`. |
+| `loadError` | `string \| null` | Show an error banner (e.g. from a host-side load). Optional. |
+| `maxStlTriangles` | `number` | Hard limit for STL import. Default `500000` (standalone). Mesh is stored in the project JSON (~48 B/triangle), so cloud hosts should set it lower — skaperiet.no uses `100000`. |
+| `guide` | `AkseGuide \| null` | Interactive step-by-step guide, shown as a bubble in the bottom right. Optional. |
+| `onGuideClose` | `() => void` | Called when the user closes the guide (the host typically resets `guide`). Optional. |
+| `locale` | `'no' \| 'en'` | Initial language. Default `'no'`. The user's choice in the UI toggle is remembered in `localStorage` and wins over this. Optional. See [Internationalization](#internationalization-i18n). |
+| `texts` | `Partial<AkseTexts>` | Override individual UI strings; merged over the active language dictionary. Optional. |
 
-### Interaktive guider
+### Interactive guides
 
-Samme mønster som Blockuino-/Vektor-guidene i skaperiet-ny-front: host eier
-guide-dataene (f.eks. fra backend) og sender dem inn som prop. Hvert steg har
-tittel, markdown-brødtekst, valgfritt bilde og en **validator** — `'info'`-steg
-bekreftes manuelt («Forstått, gå videre»), resten sjekkes automatisk mot
-prosjektets figurer mens brukeren jobber:
+Same pattern as the Blockuino/Vektor guides in skaperiet-ny-front: the host owns
+the guide data (e.g. from a backend) and passes it in as a prop. Each step has a
+title, markdown body, an optional image and a **validator** — `'info'` steps are
+confirmed manually (“Got it, continue”), the rest are checked automatically
+against the project's shapes as the user works:
 
 ```ts
 import type { AkseGuide } from '@skaperiet/akse';
 
 const guide: AkseGuide = {
-  id: 'nokkelring',
-  name: 'Lag en nøkkelring',
+  id: 'keyfob',
+  name: 'Make a key fob',
   steps: [
-    { id: 's1', title: 'Velkommen!', bodyMarkdown: 'Vi lager en **nøkkelring**.',
+    { id: 's1', title: 'Welcome!', bodyMarkdown: 'We are making a **key fob**.',
       validator: { type: 'info' } },
-    { id: 's2', title: 'Legg til en smultring',
+    { id: 's2', title: 'Add a torus',
       validator: { type: 'hasShapeKind', kind: 'torus' } },
-    { id: 's3', title: 'Lag et hull',
+    { id: 's3', title: 'Make a hole',
       validator: { type: 'hasHole' } },
   ],
 };
 ```
 
-Validatorer: `info`, `hasShapeKind` (kind + valgfri `minCount`/`mode`),
-`shapeCount`, `shapeSize` (B/D/H innenfor `min`/`max` — for konkrete mål),
-`hasHole`, `holeOverlapsSolid` (et hull overlapper en solid figur, valgfri
-`sameGroup`), `shapesOverlap` (to figur-typer overlapper — f.eks. tekst på
-skilt), `hasGroup` (valgfri `withHole: true` krever en gruppe med både hull og
-solid), `hasColor`, samt sketch-validatorene `sketchFigure` (figurtype/modus/mål
-i en plantegning) og `sketchExtrudeHeight` (3D-høyde). Sketch-validatorene
-sjekkes **live mens Plantegning-editoren er åpen** (guideboblen ligger over
-modalen og kan minimeres med `–`). Skriv stegene konkret (eksakte mål og
-plassering) og bruk validatorer som sjekker resultatet — da kan ikke brukeren
-få grønn hake uten at modellen faktisk blir riktig.
+Validators: `info`, `hasShapeKind` (kind + optional `minCount`/`mode`),
+`shapeCount`, `shapeSize` (W/D/H within `min`/`max` — for concrete measurements),
+`hasHole`, `holeOverlapsSolid` (a hole overlaps a solid shape, optional
+`sameGroup`), `shapesOverlap` (two shape types overlap — e.g. text on a sign),
+`hasGroup` (optional `withHole: true` requires a group with both a hole and a
+solid), `hasColor`, plus the sketch validators `sketchFigure` (shape
+type/mode/size in a blueprint) and `sketchExtrudeHeight` (3D height). The sketch
+validators are checked **live while the Blueprint editor is open** (the guide
+bubble sits over the modal and can be minimized with `–`). Write steps concretely
+(exact measurements and placement) and use validators that check the result —
+then the user can't get a green check without the model actually being correct.
 
-Dev-previewen har to demoguider: `/?guide` (nøkkelring-merkelapp, grunnfigurer)
-og `/?guide=navneskilt` (Plantegning + 3D-tekst). Fullførte steg huskes i
-`localStorage` per guide-id (kun info-steg gjenopprettes — validator-steg
-re-evalueres mot prosjektet). Prøv demoen med `npm run dev` → `/?guide`.
+The dev preview has two demo guides: `/?guide` (key fob tag, basic shapes) and
+`/?guide=navneskilt` (Blueprint + 3D text). Completed steps are remembered in
+`localStorage` per guide id (only info steps are restored — validator steps are
+re-evaluated against the project). Try the demo with `npm run dev` → `/?guide`.
 
-### Portene
+### The ports
 
 ```ts
 interface AkseStoragePort {
@@ -91,34 +93,73 @@ interface AkseSession {
 }
 ```
 
-`AkseProject.shapes` er et ekte array og `createdDate`/`lastUsedDate` er ISO-strenger.
-Backend-spesifikk serialisering (f.eks. JSON-kolonner) hører hjemme i host-adapteren, ikke her.
+`AkseProject.shapes` is a real array and `createdDate`/`lastUsedDate` are ISO strings.
+Backend-specific serialization (e.g. JSON columns) belongs in the host adapter, not here.
 
-## Krav til host
+## Internationalization (i18n)
 
-- **Svelte 5**, **three 0.171**, **three-bvh-csg** — `peerDependencies`. Disse MÅ deles med
-  host (én three-instans) — ellers knekker raycasting/CSG. I host-vite:
-  `resolve.dedupe = ['three', 'three-bvh-csg', 'svelte']`.
-- **FontAwesome 6** lastet globalt (ikon-klasser `fa-solid …`).
-- En font på `fontUrl` (default `/fonts/inter-regular.ttf`). Pakken bundler Inter Regular
-  under `static/fonts/` som referanse.
+Akse ships with **two built-in languages**: Norwegian (`no`, default) and English
+(`en`). A NO/EN toggle in the top bar lets the user switch language live, and the
+choice is remembered in `localStorage` (key `akse-locale`) per origin. All UI text
+— buttons, tooltips, shape names, modals and the guide bubble — switches at once.
 
-## Utvikling
+```svelte
+<script>
+  import { Akse } from '@skaperiet/akse';
+</script>
+
+<!-- Start in English; the user can still switch in the UI -->
+<Akse {storage} {session} locale="en" />
+```
+
+- **`locale` prop** (`'no' | 'en'`) sets the *initial* language. A stored choice in
+  `localStorage` wins over the prop on later visits. The standalone app on akse3d.com
+  sets `locale="en"`; a Norwegian host (skaperiet.no) leaves it on the default `'no'`.
+- **`texts` prop** (`Partial<AkseTexts>`) overrides individual strings, merged over
+  the active language dictionary — handy for your own branding:
+  ```svelte
+  <Akse {storage} {session} texts={{ cloudOpenTitle: 'Open from MyApp' }} />
+  ```
+  Note that an override is language-neutral: if you set an English string, it also
+  shows when the user switches to Norwegian. If you need language-dependent
+  overrides, pass `texts` based on `locale` from your own i18n.
+
+The package exports the dictionaries and types if you want to build your own
+overrides or inspect the keys:
+
+```ts
+import type { AkseTexts, AkseLocale } from '@skaperiet/akse';
+import { NB_TEXTS, EN_TEXTS } from '@skaperiet/akse';
+```
+
+`AkseTexts` has one key per UI string; interpolated strings use `{token}`
+placeholders (e.g. `'Step {current} of {total}'`). `NB_TEXTS` and `EN_TEXTS` have
+identical key sets.
+
+## Host requirements
+
+- **Svelte 5**, **three 0.171**, **three-bvh-csg** — `peerDependencies`. These MUST be
+  shared with the host (a single three instance) — otherwise raycasting/CSG breaks. In
+  the host vite config: `resolve.dedupe = ['three', 'three-bvh-csg', 'svelte']`.
+- **FontAwesome 6** loaded globally (icon classes `fa-solid …`).
+- A font at `fontUrl` (default `/fonts/inter-regular.ttf`). The package bundles Inter
+  Regular under `static/fonts/` as a reference.
+
+## Development
 
 ```bash
 npm install
-npm run dev          # isolert preview med localStorage-adapter (http://localhost:5173)
+npm run dev          # isolated preview with a localStorage adapter (http://localhost:5173)
 npm run check        # svelte-check
-npm run package      # bygg dist/ (svelte-package + publint)
-npm run guidebilder  # regenerer demo-guidens instruksjonsbilder (static/guide/)
+npm run package      # build dist/ (svelte-package + publint)
+npm run guidebilder  # regenerate the demo guide's instruction images (static/guide/)
 ```
 
-`guidebilder` bygger nøkkelring-merkelappen steg for steg i en ekte Akse-økt
-(headless Chrome via CDP) og tar skjermbilde etter hvert steg — kjør den når
-UI-et har endret utseende. Krever Node ≥ 22 og Chrome (overstyr sti med
-`CHROME_BIN`).
+`guidebilder` builds the key fob tag step by step in a real Akse session (headless
+Chrome via CDP) and screenshots after each step — run it when the UI has changed
+appearance. Requires Node ≥ 22 and Chrome (override the path with `CHROME_BIN`).
 
-## Lokal link mot skaperiet-ny-front
+## Local link against skaperiet-ny-front
 
 ```bash
 cd akse && npm link
@@ -127,22 +168,33 @@ cd ../skaperiet-ny-front && npm link @skaperiet/akse
 #                   optimizeDeps.exclude = ['@skaperiet/akse']
 ```
 
-Etter endringer i pakken: kjør `npm run package` på nytt, så plukker host opp ny `dist/`.
+After changes to the package: run `npm run package` again, and the host picks up the new `dist/`.
 
-## Lisens
+## About Skaperiet
 
-Akse er **dual-lisensiert**:
+Akse is made by **Skaperiet** — a maker space for kids and teens, run by Joachim
+Haagen Skeie. Skaperiet combines traditional craft with modern technology through
+courses, holiday programs and workshops, and builds Norwegian-language software and
+teaching material tailored to schools.
 
-- **[AGPL-3.0](LICENSE)** — fri programvare. Gratis for all bruk, også
-  kommersiell, så lenge du oppfyller lisensvilkårene. Merk at AGPL også gjelder
-  bruk **over nett**: bygger du Akse inn i en nettjeneste, må tjenestens
-  fullstendige kildekode gjøres tilgjengelig for brukerne under AGPL-3.0.
-- **[Kommersiell lisens](LICENSE-COMMERCIAL.md)** — for deg som vil bruke Akse
-  i lukkede produkter, SaaS-tjenester eller plattformer uten å dele kildekoden.
-  Kontakt Skaperiet: <joachim@skeiene.no>.
+At **[skaperiet.no](https://skaperiet.no)** you'll find online courses, sign-up for
+maker-space workshops, a web shop and a range of free tools and programs for creative
+learning — Akse is one of them.
 
-Navnet «Akse», logoen og domenene akse3d.no/akse3d.com er Skaperiets varemerker
-og omfattes ikke av AGPL-lisensen.
+## License
 
-Bidrag er velkomne, men krever signert [CLA](CLA.md) — se
+Akse is **dual-licensed**:
+
+- **[AGPL-3.0](LICENSE)** — free software. Free for any use, including commercial,
+  as long as you meet the license terms. Note that the AGPL also applies to use
+  **over a network**: if you build Akse into a web service, the service's complete
+  source code must be made available to its users under the AGPL-3.0.
+- **[Commercial license](LICENSE-COMMERCIAL.md)** — for those who want to use Akse
+  in closed products, SaaS services or platforms without sharing their source code.
+  Contact Skaperiet: <joachim@skaperiet.no>.
+
+The name “Akse”, the logo and the domains akse3d.no/akse3d.com are property of
+Skaperiet and Joachim Haagen Skeie and are not covered by the AGPL license.
+
+Contributions are welcome but require a signed [CLA](CLA.md) — see
 [CONTRIBUTING.md](CONTRIBUTING.md).

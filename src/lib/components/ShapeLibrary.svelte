@@ -10,6 +10,7 @@
   import { DEFAULT_EXTRUDE_HEIGHT_MM } from '$lib/akse/plantegning/sketchTypes';
   import { parseStl } from '$lib/akse/stlImport';
   import { getAkseConfig } from '$lib/config';
+  import { interpolate, type AkseTexts } from '$lib/texts';
 
   const store = getContext<ProjectStore>(STORE_CONTEXT_KEY);
   const config = getAkseConfig();
@@ -18,7 +19,7 @@
   // (samme ikoner som på landingssiden) med tre fylltoner styrt via CSS.
   type Figure = {
     kind: ShapeKind;
-    label: string;
+    labelKey: keyof AkseTexts;
     icon?: string;        // FontAwesome class (uten "fa-solid")
     iconStyle?: string;   // ekstra inline-stil (rotasjon osv.)
     svg?: string;         // inline-SVG-innhold (viewBox 0 0 64 64)
@@ -26,9 +27,9 @@
   };
 
   const drawingTools: Figure[] = [
-    { kind: 'scribble', label: 'Tegning',     icon: 'fa-pencil' },
-    { kind: 'sketch',   label: 'Plantegning', icon: 'fa-drafting-compass' },
-    { kind: 'text',     label: 'Tekst',       icon: 'fa-font' },
+    { kind: 'scribble', labelKey: 'shapeDrawing', icon: 'fa-pencil' },
+    { kind: 'sketch',   labelKey: 'shapeSketch',  icon: 'fa-drafting-compass' },
+    { kind: 'text',     labelKey: 'shapeText',    icon: 'fa-font' },
   ];
 
   // Fylltoner: f-mid = hovedflate, f-light = topp/lysflate, f-dark = skyggeflate.
@@ -47,13 +48,13 @@
   // Sylinder/Smultring) — bruk en distinkt bokstav fra hvert ord, understreket i label.
   // T og R er reservert av scene-snarveiene (flytt/roter gizmo).
   const primitives: Figure[] = [
-    { kind: 'box',      label: 'Kube',      svg: shapeSvgs.box,      hotkey: 'K' },
-    { kind: 'cylinder', label: 'Sylinder',  svg: shapeSvgs.cylinder, hotkey: 'S' },
-    { kind: 'sphere',   label: 'Kule',      svg: shapeSvgs.sphere,   hotkey: 'U' },
-    { kind: 'cone',     label: 'Kjegle',    svg: shapeSvgs.cone,     hotkey: 'J' },
-    { kind: 'pyramid',  label: 'Pyramide',  svg: shapeSvgs.pyramid,  hotkey: 'P' },
-    { kind: 'wedge',    label: 'Kile',      svg: shapeSvgs.wedge,    hotkey: 'I' },
-    { kind: 'torus',    label: 'Smultring', svg: shapeSvgs.torus,    hotkey: 'M' },
+    { kind: 'box',      labelKey: 'shapeBox',      svg: shapeSvgs.box,      hotkey: 'K' },
+    { kind: 'cylinder', labelKey: 'shapeCylinder',  svg: shapeSvgs.cylinder, hotkey: 'S' },
+    { kind: 'sphere',   labelKey: 'shapeSphere',    svg: shapeSvgs.sphere,   hotkey: 'U' },
+    { kind: 'cone',     labelKey: 'shapeCone',      svg: shapeSvgs.cone,     hotkey: 'J' },
+    { kind: 'pyramid',  labelKey: 'shapePyramid',   svg: shapeSvgs.pyramid,  hotkey: 'P' },
+    { kind: 'wedge',    labelKey: 'shapeWedge',     svg: shapeSvgs.wedge,    hotkey: 'I' },
+    { kind: 'torus',    labelKey: 'shapeTorus',     svg: shapeSvgs.torus,    hotkey: 'M' },
   ];
 
   /** Del label i [før, hotkey-bokstav, etter] for understreking. */
@@ -144,23 +145,25 @@
       const buffer = await file.arrayBuffer();
       const parsed = parseStl(buffer);
       if (parsed.triangleCount === 0) {
-        alert('Fant ingen trekanter i STL-filen.');
+        alert(config.texts.shapeStlNoTriangles);
         return;
       }
       // Hard grense satt av host (lagringshensyn — meshen lagres i prosjekt-JSON-en)
       if (parsed.triangleCount > config.maxStlTriangles) {
         alert(
-          `Modellen har ${fmtCount(parsed.triangleCount)} trekanter — grensen her er ` +
-          `${fmtCount(config.maxStlTriangles)}. Forenkle modellen (f.eks. med «decimate» ` +
-          `i et 3D-program eller i sliceren) og prøv igjen.`,
+          interpolate(config.texts.shapeStlTooMany, {
+            count: fmtCount(parsed.triangleCount),
+            limit: fmtCount(config.maxStlTriangles),
+          }),
         );
         return;
       }
       if (
         parsed.triangleCount > STL_TRIANGLE_WARN_LIMIT &&
         !confirm(
-          `Modellen har ${fmtCount(parsed.triangleCount)} trekanter ` +
-          `og kan gjøre Akse treg. Vil du importere likevel?`,
+          interpolate(config.texts.shapeStlWarningSlowdown, {
+            count: fmtCount(parsed.triangleCount),
+          }),
         )
       ) {
         return;
@@ -168,7 +171,7 @@
       store.addStlShape(parsed, file.name.replace(/\.stl$/i, ''));
     } catch (err) {
       console.error('STL-import feilet:', err);
-      alert('Kunne ikke lese STL-filen. Sjekk at den er en gyldig STL.');
+      alert(config.texts.shapeStlInvalid);
     }
   }
 
@@ -192,38 +195,38 @@
 <svelte:window onkeydown={handleHotkey} />
 
 <div class="shape-library">
-  <h3 class="property-label">Tegneverktøy</h3>
+  <h3 class="property-label">{config.texts.shapeDrawingToolsHeading}</h3>
   <div class="figure-grid">
-    {#each drawingTools as fig}
+    {#each drawingTools as fig (fig.kind)}
       <button
         type="button"
         class="figure-btn"
         class:active={store.pendingShapeKind === fig.kind}
         onclick={() => add(fig.kind)}
         disabled={store.readOnly}
-        title={fig.label}
+        title={config.texts[fig.labelKey]}
       >
         {#if fig.svg}
           <svg class="icon shape-icon" viewBox="0 0 64 64" aria-hidden="true">{@html fig.svg}</svg>
         {:else if fig.icon}
           <i class="fa-solid {fig.icon} icon" style={fig.iconStyle ?? ''}></i>
         {/if}
-        <span class="label">{fig.label}</span>
+        <span class="label">{config.texts[fig.labelKey]}</span>
       </button>
     {/each}
   </div>
 
-  <h3 class="property-label">Grunnfigurer</h3>
+  <h3 class="property-label">{config.texts.shapePrimitivesHeading}</h3>
   <div class="figure-grid">
-    {#each primitives as fig}
-      {@const [pre, hot, post] = splitLabel(fig.label, fig.hotkey)}
+    {#each primitives as fig (fig.kind)}
+      {@const [pre, hot, post] = splitLabel(config.texts[fig.labelKey], fig.hotkey)}
       <button
         type="button"
         class="figure-btn"
         class:active={store.pendingShapeKind === fig.kind}
         onclick={() => add(fig.kind)}
         disabled={store.readOnly}
-        title={fig.hotkey ? `${fig.label} (tast ${fig.hotkey})` : fig.label}
+        title={fig.hotkey ? interpolate(config.texts.shapeWithHotkey, { label: config.texts[fig.labelKey], hotkey: fig.hotkey }) : config.texts[fig.labelKey]}
       >
         {#if fig.svg}
           <svg class="icon shape-icon" viewBox="0 0 64 64" aria-hidden="true">{@html fig.svg}</svg>
@@ -231,23 +234,23 @@
           <i class="fa-solid {fig.icon} icon" style={fig.iconStyle ?? ''}></i>
         {/if}
         <span class="label">
-          {#if hot}{pre}<span class="hotkey-letter">{hot}</span>{post}{:else}{fig.label}{/if}
+          {#if hot}{pre}<span class="hotkey-letter">{hot}</span>{post}{:else}{config.texts[fig.labelKey]}{/if}
         </span>
       </button>
     {/each}
   </div>
 
-  <h3 class="property-label">Importer</h3>
+  <h3 class="property-label">{config.texts.shapeImportHeading}</h3>
   <div class="figure-grid">
     <button
       type="button"
       class="figure-btn"
       onclick={() => stlInput.click()}
       disabled={store.readOnly}
-      title="Importer STL-fil"
+      title={config.texts.shapeImportStlTitle}
     >
       <i class="fa-solid fa-file-import icon"></i>
-      <span class="label">STL-fil</span>
+      <span class="label">{config.texts.shapeImportStlLabel}</span>
     </button>
   </div>
   <input

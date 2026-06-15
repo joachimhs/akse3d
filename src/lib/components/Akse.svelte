@@ -15,7 +15,7 @@
   import { preloadFont } from '$lib/akse/textGeometry';
   import { setAkseConfig, type AkseStoragePort, type AkseSession } from '$lib/config';
   import { detectBrowserStorage, type StorageCapabilities } from '$lib/capabilities';
-  import { resolveTexts, type AkseTexts } from '$lib/texts';
+  import { resolveTexts, type AkseTexts, type AkseLocale } from '$lib/texts';
 
   let {
     storage,
@@ -26,6 +26,7 @@
     fontUrl = '/fonts/inter-regular.ttf',
     loadError = null,
     texts = undefined,
+    locale = 'no',
     maxStlTriangles = 500_000,
     guide = null,
     onGuideClose,
@@ -39,6 +40,8 @@
     fontUrl?: string;
     loadError?: string | null;
     texts?: Partial<AkseTexts>;
+    /** Startspråk. localStorage (akse-locale) vinner hvis satt. */
+    locale?: AkseLocale;
     /** Maks trekanter ved STL-import (~48 B/trekant i lagret JSON). Sky-hosts bør sette lavere. */
     maxStlTriangles?: number;
     /** Interaktiv steg-for-steg guide som vises som boble nede til høyre. */
@@ -49,12 +52,24 @@
     onOpenGuides?: () => void;
   }>();
 
-  // Tekster flettes én gang (konstante per økt) og brukes både som kapabilitets-
-  // forklaringer og av modalene.
-  const resolvedTexts = resolveTexts(texts);
+  // ── Språk: localStorage (akse-locale) vinner over prop-default ─────────────
+  const LOCALE_KEY = 'akse-locale';
+  function readStoredLocale(): AkseLocale | null {
+    if (typeof localStorage === 'undefined') return null;
+    const v = localStorage.getItem(LOCALE_KEY);
+    return v === 'no' || v === 'en' ? v : null;
+  }
+  let localeState = $state<AkseLocale>(readStoredLocale() ?? locale);
+  function setLocale(l: AkseLocale) {
+    localeState = l;
+    if (typeof localStorage !== 'undefined') localStorage.setItem(LOCALE_KEY, l);
+  }
 
-  // Browser-kapabiliteter er konstante per økt; cloud avhenger av storage + session.
-  const browserCaps = detectBrowserStorage(resolvedTexts);
+  // Tekstene er reaktive: bytter ordbok når localeState endres; host-overstyringer flettes over.
+  const resolvedTexts = $derived(resolveTexts(localeState, texts));
+
+  // Browser-kapabiliteter avhenger av tekstene (tooltip-forklaringer) → derived.
+  const browserCaps = $derived(detectBrowserStorage(resolvedTexts));
   const capabilities = $derived<StorageCapabilities>({
     cloud: storage
       ? {
@@ -71,9 +86,8 @@
     download: browserCaps.download,
   });
 
-  // Gjør host-konfig tilgjengelig for alle barn-komponenter.
-  // `session`/`storage`/`capabilities` eksponeres via getter slik at reaktive verdier
-  // alltid leses ferskt i barn-komponentene, ikke som et øyeblikksbilde.
+  // Gjør host-konfig tilgjengelig for alle barn-komponenter. Reaktive verdier
+  // eksponeres via getter slik at de alltid leses ferskt (ikke som øyeblikksbilde).
   setAkseConfig({
     get storage() {
       return storage;
@@ -84,7 +98,13 @@
     get capabilities() {
       return capabilities;
     },
-    texts: resolvedTexts,
+    get texts() {
+      return resolvedTexts;
+    },
+    get locale() {
+      return localeState;
+    },
+    setLocale,
     onProjectIdChange,
     onOpenGuides,
     fontUrl,
@@ -246,7 +266,7 @@
   {/if}
   {#if store.readOnly}
     <div class="readonly-banner">
-      Du ser et delt prosjekt. Trykk "Ta en kopi" for å redigere.
+      {resolvedTexts.akseReadOnlyBanner}
     </div>
   {/if}
   <div class="topbar-slot">
@@ -261,16 +281,16 @@
       type="button"
       class="edge-tab edge-left"
       onclick={toggleLibrary}
-      title={libraryOpen ? 'Skjul figurbibliotek' : 'Vis figurbibliotek'}
-      aria-label={libraryOpen ? 'Skjul figurbibliotek' : 'Vis figurbibliotek'}
+      title={libraryOpen ? resolvedTexts.akseHideLibrary : resolvedTexts.akseShowLibrary}
+      aria-label={libraryOpen ? resolvedTexts.akseHideLibrary : resolvedTexts.akseShowLibrary}
       aria-expanded={libraryOpen}
     >{libraryOpen ? '‹' : '›'}</button>
     <button
       type="button"
       class="edge-tab edge-right"
       onclick={togglePanel}
-      title={panelOpen ? 'Skjul egenskaper' : 'Vis egenskaper'}
-      aria-label={panelOpen ? 'Skjul egenskaper' : 'Vis egenskaper'}
+      title={panelOpen ? resolvedTexts.akseHidePanel : resolvedTexts.akseShowPanel}
+      aria-label={panelOpen ? resolvedTexts.akseHidePanel : resolvedTexts.akseShowPanel}
       aria-expanded={panelOpen}
     >{panelOpen ? '›' : '‹'}</button>
   </div>

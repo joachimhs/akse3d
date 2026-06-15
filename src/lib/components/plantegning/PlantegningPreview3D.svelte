@@ -6,6 +6,9 @@
   import type { SketchStore } from '$lib/akse/plantegning/SketchStore.svelte';
   import type { SketchData } from '$lib/akse/plantegning/sketchTypes';
   import { extrudeSketch } from '$lib/akse/plantegning/sketchExtrude';
+  import { getAkseConfig } from '$lib/config';
+
+  const config = getAkseConfig();
 
   let containerEl: HTMLDivElement;
   let renderer: THREE.WebGLRenderer | undefined;
@@ -142,9 +145,9 @@
 <div class="preview3d">
   <div class="canvas-host" bind:this={containerEl}></div>
   {#if status === 'empty'}
-    <div class="overlay">Tegn en figur for å se 3D-modellen</div>
+    <div class="overlay">{config.texts.plantegning3DEmpty}</div>
   {:else if status === 'error'}
-    <div class="overlay note">Kunne ikke oppdatere 3D</div>
+    <div class="overlay note">{config.texts.plantegning3DError}</div>
   {/if}
 </div>
 

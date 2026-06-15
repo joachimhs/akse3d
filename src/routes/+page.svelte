@@ -16,7 +16,13 @@
     AkseStoragePort,
     AkseSession,
     AkseGuide,
+    AkseLocale,
   } from '$lib/index';
+
+  // Default to English; ?lang=no gives Norwegian.
+  const initialLocale: AkseLocale = $derived(
+    $page.url.searchParams.get('lang') === 'no' ? 'no' : 'en',
+  );
 
   // Sky på kun når ?cloud er i URL-en.
   const cloudEnabled = $derived($page.url.searchParams.has('cloud'));
@@ -201,12 +207,195 @@
     ],
   };
 
+  // ── English twins of the two demo guides ────────────────────────────────────
+  // Same id / validator / imageUrl — only name, title, bodyMarkdown translated.
+  const demoGuideEn: AkseGuide = {
+    id: 'demo-nokkelring',
+    name: 'Make a key fob tag',
+    steps: [
+      {
+        id: 'intro',
+        title: 'Welcome to Akse!',
+        imageUrl: '/guide/steg-ferdig.png',
+        bodyMarkdown:
+          "We'll make a **key fob tag**: a round, flat disc with a small hole near the edge " +
+          'that the key ring can thread through. Along the way you\'ll learn to add shapes, ' +
+          'set exact measurements, make holes and group.',
+        validator: { type: 'info' },
+      },
+      {
+        id: 'skive',
+        title: 'Add a cylinder',
+        imageUrl: '/guide/steg-sylinder.png',
+        bodyMarkdown:
+          'Click **Cylinder** in the shape library on the left (or press `S`), and click ' +
+          'in the middle of the work plane to place it. It will become the disc itself.',
+        validator: { type: 'hasShapeKind', kind: 'cylinder' },
+      },
+      {
+        id: 'flat-skive',
+        title: 'Make it a flat disc',
+        imageUrl: '/guide/steg-flat-skive.png',
+        bodyMarkdown:
+          'With the cylinder selected: go to **Size (mm)** in the panel on the right and set\n\n' +
+          '- **W** = `40`\n- **D** = `40`\n- **H** = `6`\n\n' +
+          'This gives a flat disc 4 cm across — just right for a tag.',
+        validator: { type: 'shapeSize', kind: 'cylinder', dim: 'h', max: 8 },
+      },
+      {
+        id: 'liten-sylinder',
+        title: 'Add a small cylinder',
+        imageUrl: '/guide/steg-liten-sylinder.png',
+        bodyMarkdown:
+          'Add **one more cylinder** a bit away from the disc. Set its size to ' +
+          '**W** = `8` and **D** = `8` — it will become the key-ring hole.',
+        validator: { type: 'shapeSize', kind: 'cylinder', dim: 'b', max: 10 },
+      },
+      {
+        id: 'hull',
+        title: 'Turn the small one into a hole',
+        imageUrl: '/guide/steg-hull.png',
+        bodyMarkdown:
+          'Select the small cylinder and press `H` (or use the **Mode** toggle in the panel). ' +
+          'It turns red and transparent — that means it cuts out of other shapes.',
+        validator: { type: 'shapeSize', kind: 'cylinder', mode: 'hole', dim: 'b', max: 10 },
+      },
+      {
+        id: 'plasser-hull',
+        title: 'Position the hole on the disc',
+        imageUrl: '/guide/steg-plasser-hull.png',
+        bodyMarkdown:
+          'Drag the small hole cylinder **onto the disc, near the edge** — it must overlap ' +
+          'the disc, but leave a few millimetres to the edge so the tag does not break.',
+        validator: { type: 'holeOverlapsSolid' },
+      },
+      {
+        id: 'grupper',
+        title: 'Group to cut the hole',
+        imageUrl: '/guide/steg-ferdig.png',
+        bodyMarkdown:
+          'Select **both** shapes (drag a box around them, or Shift-click) and press ' +
+          '`Ctrl+G` or the **Group** button. The hole is now cut out — your tag is done!',
+        validator: { type: 'hasGroup', withHole: true },
+      },
+      {
+        id: 'ferdig',
+        title: 'Done — make it your own!',
+        bodyMarkdown:
+          'Great work! 🎉 Feel free to:\n\n' +
+          '- add **Text** with your name\n' +
+          '- change the **color** in the panel on the right\n' +
+          '- export **STL** from the button at the top when you want to 3D-print',
+        validator: { type: 'info' },
+      },
+    ],
+  };
+
+  const navneskiltGuideEn: AkseGuide = {
+    id: 'demo-navneskilt',
+    name: 'Make a name tag',
+    steps: [
+      {
+        id: 'intro',
+        title: "Let's make a name tag!",
+        imageUrl: '/guide/skilt-ferdig.png',
+        bodyMarkdown:
+          'A **name tag** with rounded corners, a key-ring hole and your name in 3D text. ' +
+          'This time we draw the shape in **Blueprint** — the sketch tool where you draw in 2D ' +
+          'and lift the result up into 3D.',
+        validator: { type: 'info' },
+      },
+      {
+        id: 'avrundet-rektangel',
+        title: 'Draw a rounded rectangle',
+        imageUrl: '/guide/skilt-skisse.png',
+        bodyMarkdown:
+          'Click **Blueprint** in the library on the left. Choose the ' +
+          '**Rounded rect.** tool (key `O`) and drag a rectangle in the middle of the grid. ' +
+          'The guide follows along as you draw.',
+        validator: { type: 'sketchFigure', figureKind: 'roundedRect' },
+      },
+      {
+        id: 'maal',
+        title: 'Set the dimensions: 100 × 50',
+        imageUrl: '/guide/skilt-skisse.png',
+        bodyMarkdown:
+          'Select the rectangle with the **Select** tool (`V`) and set in Properties on the right:\n\n' +
+          '- **W (mm)** = `100`\n- **H (mm)** = `50`',
+        validator: {
+          type: 'sketchFigure',
+          figureKind: 'roundedRect',
+          minWidth: 95, maxWidth: 105,
+          minHeight: 45, maxHeight: 55,
+        },
+      },
+      {
+        id: 'hoyde',
+        title: 'Make the tag 2 mm thin',
+        imageUrl: '/guide/skilt-skisse.png',
+        bodyMarkdown:
+          'Set **3D height (mm)** in the panel on the right to `2` — a thin and lightweight tag.',
+        validator: { type: 'sketchExtrudeHeight', min: 1, max: 3 },
+      },
+      {
+        id: 'hjornehull',
+        title: 'Make a hole in the corner',
+        imageUrl: '/guide/skilt-hull.png',
+        bodyMarkdown:
+          'Choose **Circle** (`S`) and draw a small circle (radius about `3` mm) in one corner — ' +
+          'keep a little distance from the edge. Set **Mode** to **Hole**, so it turns orange and dashed.',
+        validator: { type: 'sketchFigure', figureKind: 'circle', mode: 'hole', maxWidth: 12 },
+      },
+      {
+        id: 'lag-3d',
+        title: 'Create the 3D model',
+        imageUrl: '/guide/skilt-3d.png',
+        bodyMarkdown:
+          'Check the preview in the lower right, then click **Make 3D model** — ' +
+          'the tag lands on the work plane with the hole already cut out.',
+        validator: { type: 'hasShapeKind', kind: 'sketch' },
+      },
+      {
+        id: 'tekst',
+        title: 'Add your name',
+        imageUrl: '/guide/skilt-tekst.png',
+        bodyMarkdown:
+          'Click **Text** in the library and place the text on the work plane. ' +
+          'Type your name (e.g. "Your Name") in the **Text** field in the panel on the right.',
+        validator: { type: 'hasShapeKind', kind: 'text' },
+      },
+      {
+        id: 'plasser-tekst',
+        title: 'Place the name on the tag',
+        imageUrl: '/guide/skilt-ferdig.png',
+        bodyMarkdown:
+          'Drag the text **onto the tag** and make it a bit bigger — it must sit on top of the tag. ' +
+          'Try changing the color of the text in the panel so the name stands out.',
+        validator: { type: 'shapesOverlap', kindA: 'text', kindB: 'sketch' },
+      },
+      {
+        id: 'ferdig',
+        title: 'The name tag is ready!',
+        bodyMarkdown:
+          'Fantastic! 🎉 Want to adjust the shape? Select the tag and click **Edit blueprint** — ' +
+          'the sketch can always be changed. Export **STL** from the button at the top when you want to print.',
+        validator: { type: 'info' },
+      },
+    ],
+  };
+
+  // Select guide variant based on locale.
+  const activeDemoGuide = $derived(initialLocale === 'en' ? demoGuideEn : demoGuide);
+  const activeNavneskiltGuide = $derived(
+    initialLocale === 'en' ? navneskiltGuideEn : navneskiltGuide,
+  );
+
   let guideOpen = $state(false);
   $effect(() => {
     guideOpen = $page.url.searchParams.has('guide');
   });
   const aktivGuide = $derived(
-    $page.url.searchParams.get('guide') === 'navneskilt' ? navneskiltGuide : demoGuide,
+    $page.url.searchParams.get('guide') === 'navneskilt' ? activeNavneskiltGuide : activeDemoGuide,
   );
 
   const KEY = 'akse-dev-projects';
@@ -266,6 +455,7 @@
 <Akse
   {storage}
   {session}
+  locale={initialLocale}
   fontUrl="/fonts/inter-regular.ttf"
   texts={{ cloudUnavailable: 'Skylagring er ikke aktivert i denne demoen.' }}
   guide={guideOpen ? aktivGuide : null}

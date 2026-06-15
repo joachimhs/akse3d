@@ -4,6 +4,7 @@
   import { ProjectStore, STORE_CONTEXT_KEY } from '$lib/akse/ProjectStore.svelte';
   import { getAkseConfig } from '$lib/config';
   import { openTextFromFile } from '$lib/akse/diskFile';
+  import { interpolate } from '$lib/texts';
   import type { AkseProjectSummary } from '$lib/models';
 
   const store = getContext<ProjectStore>(STORE_CONTEXT_KEY);
@@ -39,7 +40,7 @@
         });
     } catch (e) {
       console.error(e);
-      error = 'Klarte ikke laste prosjekter';
+      error = config.texts.modalOpenLoadError;
     } finally {
       loading = false;
     }
@@ -60,19 +61,19 @@
       onClose();
     } catch (e) {
       console.error(e);
-      alert('Klarte ikke åpne prosjekt');
+      alert(config.texts.modalOpenOpenError);
     }
   }
 
   async function deleteProject(p: AkseProjectSummary) {
     if (!config.storage) return;
-    if (!confirm(`Slette "${p.name || 'uten navn'}" permanent?`)) return;
+    if (!confirm(interpolate(config.texts.modalOpenDeleteConfirm, { name: p.name || config.texts.modalOpenUnnamed }))) return;
     try {
       await config.storage.remove(p.id);
       projects = projects.filter((x) => x.id !== p.id);
     } catch (e) {
       console.error(e);
-      alert('Klarte ikke slette');
+      alert(config.texts.modalOpenDeleteError);
     }
   }
 
@@ -86,7 +87,7 @@
         onClose();
       } catch (err) {
         console.error(err);
-        alert('Klarte ikke å lese filen — sjekk at det er et gyldig Akse-prosjekt.');
+        alert(config.texts.modalOpenReadFileError);
       }
       return;
     }
@@ -103,7 +104,7 @@
       onClose();
     } catch (err) {
       console.error(err);
-      alert('Klarte ikke å lese filen — sjekk at det er et gyldig Akse-prosjekt.');
+      alert(config.texts.modalOpenReadFileError);
     } finally {
       input.value = '';
     }
@@ -112,7 +113,7 @@
   async function copyFromProjectId() {
     const id = projectIdToCopyFrom.trim();
     if (!id) {
-      alert('Skriv inn prosjekt-ID');
+      alert(config.texts.modalOpenEnterIdError);
       return;
     }
     copying = true;
@@ -121,7 +122,7 @@
       onClose();
     } catch (e) {
       console.error(e);
-      alert('Fant ikke prosjektet, eller klarte ikke åpne det.');
+      alert(config.texts.modalOpenCloneError);
     } finally {
       copying = false;
     }
@@ -130,32 +131,32 @@
 
 <div class="modal-backdrop" onclick={onClose} role="presentation">
   <div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-    <button class="close" onclick={onClose} aria-label="Lukk" title="Lukk">
+    <button class="close" onclick={onClose} aria-label={config.texts.commonClose} title={config.texts.commonClose}>
       <i class="fa-solid fa-xmark"></i>
     </button>
     <div class="grid">
       <div class="col left">
         <div class="section">
-          <div class="section-title"><i class="fa-solid fa-folder-open"></i> Åpne fra datamaskinen</div>
-          <p>Hvis du tidligere har lagret et Akse-prosjekt som JSON-fil, eller fått en fra noen andre, kan du åpne det her.</p>
+          <div class="section-title"><i class="fa-solid fa-folder-open"></i> {config.texts.modalOpenLocalSectionTitle}</div>
+          <p>{config.texts.modalOpenLocalSectionDesc}</p>
           <button class="btn primary big" onclick={openFile}>
-            <i class="fa-solid fa-folder-open"></i> Åpne prosjektfil (.json)
+            <i class="fa-solid fa-folder-open"></i> {config.texts.modalOpenFileButton}
           </button>
           <input bind:this={fileInputEl} type="file" accept=".json,application/json" style="display:none" onchange={onFileChosen} />
         </div>
 
         <div class="section">
-          <div class="section-title"><i class="fa-solid fa-copy"></i> Kopier fra et annet prosjekt</div>
+          <div class="section-title"><i class="fa-solid fa-copy"></i> {config.texts.modalOpenCopySectionTitle}</div>
           {#if !config.capabilities.cloud.available}
             <p class="login-msg">{config.capabilities.cloud.reason}</p>
           {:else}
-            <div class="warn">Ved å kopiere et annet prosjekt opprettes en kopi for deg — originalen røres ikke.</div>
+            <div class="warn">{config.texts.modalOpenCopyWarning}</div>
             <label class="field">
-              Prosjekt-ID:
-              <input type="text" placeholder="Lim inn ID her" bind:value={projectIdToCopyFrom} />
+              {config.texts.modalOpenProjectId}
+              <input type="text" placeholder={config.texts.modalOpenProjectIdPlaceholder} bind:value={projectIdToCopyFrom} />
             </label>
             <button class="btn primary" disabled={copying || !projectIdToCopyFrom.trim()} onclick={copyFromProjectId}>
-              {#if copying}<i class="fa-solid fa-spinner fa-spin"></i> Kopierer…{:else}<i class="fa-solid fa-copy"></i> Kopier prosjekt{/if}
+              {#if copying}<i class="fa-solid fa-spinner fa-spin"></i> {config.texts.modalOpenCopying}{:else}<i class="fa-solid fa-copy"></i> {config.texts.modalOpenCopy}{/if}
             </button>
           {/if}
         </div>
@@ -170,27 +171,27 @@
             <p class="login-msg">{config.texts.cloudOpenLoginRequired}</p>
           {:else}
             <p>{config.texts.cloudOpenIntro}</p>
-            <input type="text" class="filter-input" placeholder="Filtrer prosjekter…" bind:value={projectFilter} />
+            <input type="text" class="filter-input" placeholder={config.texts.modalOpenFilterPlaceholder} bind:value={projectFilter} />
             {#if loading}
-              <div class="status"><i class="fa-solid fa-spinner fa-spin"></i> Laster…</div>
+              <div class="status"><i class="fa-solid fa-spinner fa-spin"></i> {config.texts.modalOpenLoading}</div>
             {:else if error}
               <div class="status error">{error}</div>
             {:else if filteredProjects.length === 0}
               <div class="status">
-                {projectFilter.trim() ? 'Ingen prosjekter matcher filteret.' : 'Du har ingen lagrede prosjekter ennå.'}
+                {projectFilter.trim() ? config.texts.modalOpenNoMatch : config.texts.modalOpenNoProjects}
               </div>
             {:else}
               <div class="project-list">
                 {#each filteredProjects as p (p.id)}
                   <div class="project-item">
                     <div class="project-main">
-                      <div class="project-name">{p.name || '(uten navn)'}</div>
+                      <div class="project-name">{p.name || config.texts.modalOpenUnnamed}</div>
                       {#if p.description}<div class="project-desc">{p.description}</div>{/if}
                       <div class="project-meta">{p.lastUsedDate ? new Date(p.lastUsedDate).toLocaleString('no-NO') : ''}</div>
                     </div>
                     <div class="project-actions">
-                      <button class="btn small primary" onclick={() => openProject(p)}>Åpne</button>
-                      <button class="btn small danger" onclick={() => deleteProject(p)} aria-label="Slett">
+                      <button class="btn small primary" onclick={() => openProject(p)}>{config.texts.modalOpenOpen}</button>
+                      <button class="btn small danger" onclick={() => deleteProject(p)} aria-label={config.texts.modalOpenDelete}>
                         <i class="fa-solid fa-trash"></i>
                       </button>
                     </div>

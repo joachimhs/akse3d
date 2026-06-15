@@ -3,6 +3,10 @@
   import { getContext } from 'svelte';
   import type { SketchStore } from '$lib/akse/plantegning/SketchStore.svelte';
   import type { SketchFigureKind } from '$lib/akse/plantegning/sketchTypes';
+  import { getAkseConfig } from '$lib/config';
+  import { interpolate, type AkseTexts } from '$lib/texts';
+
+  const config = getAkseConfig();
 
   const store = getContext<SketchStore>('sketchStore');
   const inputModeGetter = getContext<() => 'pointer' | 'touch'>('inputMode');
@@ -13,14 +17,14 @@
   let multiSelectMode = $derived(multiSelectModeGetter ? multiSelectModeGetter() : false);
 
   // shortcut speiler TOOL_KEYS i PlantegningEditor.svelte
-  const tools: Array<{ id: SketchFigureKind | 'select'; label: string; icon: string; shortcut: string }> = [
-    { id: 'select',      label: 'Velg',           icon: '↖', shortcut: 'V' },
-    { id: 'rectangle',   label: 'Rektangel',      icon: '▭', shortcut: 'R' },
-    { id: 'roundedRect', label: 'Avrundet rekt.', icon: '▢', shortcut: 'O' },
-    { id: 'circle',      label: 'Sirkel',         icon: '◯', shortcut: 'S' },
-    { id: 'ellipse',     label: 'Ellipse',        icon: '⬭', shortcut: 'E' },
-    { id: 'triangle',    label: 'Trekant',        icon: '△', shortcut: 'T' },
-    { id: 'polygon',     label: 'Polygon',        icon: '⬡', shortcut: 'P' },
+  const tools: Array<{ id: SketchFigureKind | 'select'; labelKey: keyof AkseTexts; icon: string; shortcut: string }> = [
+    { id: 'select',      labelKey: 'plantegningSelectTool',  icon: '↖', shortcut: 'V' },
+    { id: 'rectangle',   labelKey: 'plantegningRectangle',   icon: '▭', shortcut: 'R' },
+    { id: 'roundedRect', labelKey: 'plantegningRoundedRect', icon: '▢', shortcut: 'O' },
+    { id: 'circle',      labelKey: 'plantegningCircle',      icon: '◯', shortcut: 'S' },
+    { id: 'ellipse',     labelKey: 'plantegningEllipse',     icon: '⬭', shortcut: 'E' },
+    { id: 'triangle',    labelKey: 'plantegningTriangle',    icon: '△', shortcut: 'T' },
+    { id: 'polygon',     labelKey: 'plantegningPolygon',     icon: '⬡', shortcut: 'P' },
   ];
 
   function activate(id: typeof tools[number]['id']) {
@@ -46,16 +50,16 @@
 </script>
 
 <div class="toolbar">
-  <h3>Verktøy</h3>
+  <h3>{config.texts.plantegningToolsHeading}</h3>
   <div class="tools">
     {#each tools as t}
       <button
         class:active={store.activeTool === t.id}
         onclick={() => activate(t.id)}
-        title={`${t.label} (${t.shortcut})`}
+        title={interpolate(config.texts.plantegningToolWithShortcut, { label: config.texts[t.labelKey], shortcut: t.shortcut })}
       >
         <span class="icon">{t.icon}</span>
-        <span class="label">{t.label}</span>
+        <span class="label">{config.texts[t.labelKey]}</span>
         <kbd class="shortcut">{t.shortcut}</kbd>
       </button>
     {/each}
@@ -66,17 +70,17 @@
   <button
     onclick={() => store.groupSelected()}
     disabled={!canGroup}
-    title={canGroup ? 'Grupper valgte figurer (viser avstandsguider)' : 'Velg minst to figurer som ikke alle deler samme gruppe'}
+    title={canGroup ? config.texts.plantegningGroupTooltip : config.texts.plantegningGroupDisabledTooltip}
   >
-    <span class="icon"><i class="fa-solid fa-object-group" aria-hidden="true"></i></span> Grupper
+    <span class="icon"><i class="fa-solid fa-object-group" aria-hidden="true"></i></span> {config.texts.plantegningGroup}
   </button>
 
   <button
     onclick={() => store.ungroupSelected()}
     disabled={!canUngroup}
-    title={canUngroup ? 'Fjern gruppe fra valgte figurer' : 'Ingen valgte figurer er gruppert'}
+    title={canUngroup ? config.texts.plantegningUngroupTooltip : config.texts.plantegningUngroupDisabledTooltip}
   >
-    <span class="icon"><i class="fa-solid fa-object-ungroup" aria-hidden="true"></i></span> Avgrupper
+    <span class="icon"><i class="fa-solid fa-object-ungroup" aria-hidden="true"></i></span> {config.texts.plantegningUngroup}
   </button>
 
   {#if inputMode === 'touch'}
@@ -84,17 +88,17 @@
       class:active={multiSelectMode}
       onclick={() => setMultiSelectMode(!multiSelectMode)}
     >
-      {multiSelectMode ? '✓ Velger flere' : 'Velg flere'}
+      {multiSelectMode ? config.texts.plantegningMultiSelectActive : config.texts.plantegningMultiSelect}
     </button>
   {/if}
 
   <hr />
 
   <button onclick={() => store.undo()} disabled={!store.canUndo}>
-    <span class="icon"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></span> Angre
+    <span class="icon"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></span> {config.texts.topbarUndo}
   </button>
   <button onclick={() => store.redo()} disabled={!store.canRedo}>
-    <span class="icon"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></span> Gjør om
+    <span class="icon"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></span> {config.texts.topbarRedo}
   </button>
 </div>
 

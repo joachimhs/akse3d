@@ -11,8 +11,8 @@ export type {
 
 export type { StorageCapabilities, CapabilityState } from '$lib/capabilities';
 
-export type { AkseTexts } from '$lib/texts';
-export { DEFAULT_TEXTS } from '$lib/texts';
+export type { AkseTexts, AkseLocale } from '$lib/texts';
+export { NB_TEXTS, EN_TEXTS } from '$lib/texts';
 
 export type {
   AkseProject,
