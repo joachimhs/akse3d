@@ -1,11 +1,25 @@
 # @skaperiet/akse
 
-Akse — a 3D modelling tool for kids and beginners ([akse3d.no](https://akse3d.no) / akse3d.com).
+Akse — a 3D modelling tool for kids and beginners ([akse3d.no](https://akse3d.no) / [akse3d.com](https://akse3d.com)).
 
 Primitive-based 3D modelling (box, cylinder, sphere, … + boolean holes), a 2D
 blueprint editor and freehand drawing, with STL export for 3D printing. Built on
 Svelte 5, Three.js and three-bvh-csg. The package is **backend-agnostic**: it
 loads/saves data through ports that the host implements.
+
+## Screenshots
+
+![The Akse 3D editor — a model built from primitive shapes, with the shape library on the left and the properties panel on the right](https://raw.githubusercontent.com/joachimhs/akse3d/main/landingpage/img/editor.png)
+
+*The 3D editor: build with primitive shapes and boolean holes, measured in real millimetres.*
+
+![The Blueprint editor — a 2D drawing toolbar on the left, a sketch of a circle with a hole, and a live 3D preview](https://raw.githubusercontent.com/joachimhs/akse3d/main/landingpage/img/plantegning.png)
+
+*The Blueprint editor: draw a 2D outline and lift it into a 3D model with one click.*
+
+![Close-up of a blueprint with editable dimension lines in millimetres](https://raw.githubusercontent.com/joachimhs/akse3d/main/landingpage/img/skisse-naerbilde.png)
+
+*Editable distance guides between grouped shapes.*
 
 ## Usage
 
